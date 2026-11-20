@@ -243,7 +243,8 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
       {/* Pas de pied de page sur l'accueil : les informations légales restent accessibles ici */}
       <nav className="hero2__legal" aria-label="Informations légales">
         {legalNav.map((l) => (
-          <Link key={l.href} href={l.href}>
+          // Pas de préchargement automatique : 27 liens visibles sur l'accueil, seuls les 2 boutons principaux préchargent
+          <Link key={l.href} href={l.href} prefetch={false}>
             {l.label}
           </Link>
         ))}
@@ -322,6 +323,7 @@ function HeroReel({
       <Link
         key={`${copy ? "c" : "o"}-${it.href}`}
         href={it.href}
+        prefetch={false}
         className={`reel2__item${i === active ? " is-active" : ""}`}
         onPointerEnter={() => onOver(i)}
         onFocus={() => onOver(i)}
