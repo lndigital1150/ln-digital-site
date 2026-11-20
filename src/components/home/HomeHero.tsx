@@ -3,14 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  gsap,
-  ScrollTrigger,
-  prefersReducedMotion,
-  isMotionPaused,
-  setMotionPaused,
-  onMotionPause,
-} from "@/lib/motion";
+// GSAP n'est pas importé directement : il est chargé après le premier affichage (loadMotion)
+import { loadMotion, prefersReducedMotion, isMotionPaused, setMotionPaused, onMotionPause } from "@/lib/motion-state";
 import { photos, type PhotoKey } from "@/config/images";
 import { ArrowUpRight } from "@/components/ui/Icons";
 import { legalNav, site } from "@/config/site";
@@ -94,49 +88,56 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
     if (prefersReducedMotion()) return;
 
     const cleanups: Array<() => void> = [];
+    let dead = false;
 
-    // L'intro (fond, logo, boutons, bandeau) est en CSS (globals.css) et démarre dès le premier affichage.
-    // Seul le compteur d'année façon « amorce de film » reste en JS ; il se termine quand le pied apparaît.
-    const counter = { v: year - 26 };
-    // Synchronisé sur l'animation CSS d'apparition de l'année (délai 1,2 s depuis le premier affichage)
-    const appear = yearRef.current?.parentElement?.getAnimations?.()[0];
-    const elapsed = typeof appear?.currentTime === "number" ? appear.currentTime : 0;
-    // Page déjà affichée depuis longtemps (JS chargé tard) : on ne rejoue pas le compteur sous les yeux du visiteur
-    if (elapsed <= 1600) {
-      const tween = gsap.to(counter, {
-        v: year,
-        duration: 1.6,
-        ease: "power3.out",
-        delay: Math.max(0, (1200 - elapsed) / 1000),
-        onUpdate: () => {
-          if (yearRef.current) yearRef.current.textContent = String(Math.round(counter.v));
-        },
-      });
-      cleanups.push(() => tween.kill());
-    }
+    loadMotion().then(({ gsap }) => {
+      if (dead) return;
+      // L'intro (fond, logo, boutons, bandeau) est en CSS (globals.css) et démarre dès le premier affichage.
+      // Seul le compteur d'année façon « amorce de film » reste en JS ; il se termine quand le pied apparaît.
+      const counter = { v: year - 26 };
+      // Synchronisé sur l'animation CSS d'apparition de l'année (délai 1,2 s depuis le premier affichage)
+      const appear = yearRef.current?.parentElement?.getAnimations?.()[0];
+      const elapsed = typeof appear?.currentTime === "number" ? appear.currentTime : 0;
+      // Page déjà affichée depuis longtemps (JS chargé tard) : on ne rejoue pas le compteur sous les yeux du visiteur
+      if (elapsed <= 1600) {
+        const tween = gsap.to(counter, {
+          v: year,
+          duration: 1.6,
+          ease: "power3.out",
+          delay: Math.max(0, (1200 - elapsed) / 1000),
+          onUpdate: () => {
+            if (yearRef.current) yearRef.current.textContent = String(Math.round(counter.v));
+          },
+        });
+        cleanups.push(() => tween.kill());
+      }
 
-    // Inclinaison du logo et parallaxe du fond à la souris
-    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      const wm = el.querySelector(".hero2__tilt")!;
-      const bg = el.querySelector(".hero2__parallax")!;
-      gsap.set(wm, { transformPerspective: 1200 });
-      const rx = gsap.quickTo(wm, "rotationX", { duration: 1, ease: "power3" });
-      const ry = gsap.quickTo(wm, "rotationY", { duration: 1, ease: "power3" });
-      const bx = gsap.quickTo(bg, "x", { duration: 1.4, ease: "power3" });
-      const by = gsap.quickTo(bg, "y", { duration: 1.4, ease: "power3" });
-      const move = (e: PointerEvent) => {
-        const px = e.clientX / window.innerWidth - 0.5;
-        const py = e.clientY / window.innerHeight - 0.5;
-        ry(px * 14);
-        rx(-py * 10);
-        bx(-px * 36);
-        by(-py * 24);
-      };
-      el.addEventListener("pointermove", move);
-      cleanups.push(() => el.removeEventListener("pointermove", move));
-    }
+      // Inclinaison du logo et parallaxe du fond à la souris
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        const wm = el.querySelector(".hero2__tilt")!;
+        const bg = el.querySelector(".hero2__parallax")!;
+        gsap.set(wm, { transformPerspective: 1200 });
+        const rx = gsap.quickTo(wm, "rotationX", { duration: 1, ease: "power3" });
+        const ry = gsap.quickTo(wm, "rotationY", { duration: 1, ease: "power3" });
+        const bx = gsap.quickTo(bg, "x", { duration: 1.4, ease: "power3" });
+        const by = gsap.quickTo(bg, "y", { duration: 1.4, ease: "power3" });
+        const move = (e: PointerEvent) => {
+          const px = e.clientX / window.innerWidth - 0.5;
+          const py = e.clientY / window.innerHeight - 0.5;
+          ry(px * 14);
+          rx(-py * 10);
+          bx(-px * 36);
+          by(-py * 24);
+        };
+        el.addEventListener("pointermove", move);
+        cleanups.push(() => el.removeEventListener("pointermove", move));
+      }
+    });
 
-    return () => cleanups.forEach((c) => c());
+    return () => {
+      dead = true;
+      cleanups.forEach((c) => c());
+    };
   }, []);
 
   const onReelOver = useCallback((i: number) => {
@@ -278,27 +279,24 @@ function HeroReel({
     let x = 0;
     let slow = false;
     let focused = false;
-    let boost = 0;
     // Largeur mesurée une fois (puis au redimensionnement), pas à chaque image : évite un recalcul de mise en page forcé
     let half = t.scrollWidth / 2;
     const ro = new ResizeObserver(() => (half = t.scrollWidth / 2));
     ro.observe(t);
-    const tick = (_: number, dt: number) => {
+    // Boucle d'animation native (pas besoin de GSAP : l'accueil ne défile pas, aucune accélération au défilement)
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick);
+      const dt = Math.min(now - last, 100); // onglet revenu au premier plan : pas de saut
+      last = now;
       // À l'arrêt si l'utilisateur a mis en pause ou navigue au clavier dans le bandeau
       if (pausedRef.current || focused) return;
-      const speed = (slow ? 6 : 30) + boost;
-      x -= speed * (dt / 1000);
+      x -= (slow ? 6 : 30) * (dt / 1000);
       if (half > 0 && x <= -half) x += half;
       t.style.transform = `translate3d(${x}px,0,0)`;
-      boost *= 0.9;
     };
-    gsap.ticker.add(tick);
-    const st = ScrollTrigger.create({
-      trigger: t,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: (s) => (boost = Math.min(Math.abs(s.getVelocity()) / 5, 700)),
-    });
+    raf = requestAnimationFrame(tick);
     const enter = () => (slow = true);
     const leave = () => (slow = false);
     const focusIn = () => (focused = true);
@@ -308,9 +306,8 @@ function HeroReel({
     t.addEventListener("focusin", focusIn);
     t.addEventListener("focusout", focusOut);
     return () => {
-      gsap.ticker.remove(tick);
+      cancelAnimationFrame(raf);
       ro.disconnect();
-      st.kill();
       t.removeEventListener("pointerenter", enter);
       t.removeEventListener("pointerleave", leave);
       t.removeEventListener("focusin", focusIn);

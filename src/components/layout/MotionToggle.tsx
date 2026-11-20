@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { isMotionPaused, onMotionPause, setMotionPaused } from "@/lib/motion";
+import { isMotionPaused, onMotionPause, setMotionPaused } from "@/lib/motion-state";
 
 /** Bouton présent sur toutes les pages : met en pause les animations qui défilent seules (WCAG 2.2.2). */
 export default function MotionToggle() {

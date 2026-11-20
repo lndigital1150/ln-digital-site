@@ -7,9 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HideOnHome from "@/components/layout/HideOnHome";
 import { CookieBanner, WhatsAppFloat } from "@/components/layout/Floating";
-import MotionRoot from "@/components/motion/MotionRoot";
-import Cursor from "@/components/motion/Cursor";
-import ScrollUI from "@/components/motion/ScrollUI";
+import LazyMotion from "@/components/motion/LazyMotion";
 import JsonLd from "@/components/seo/JsonLd";
 
 /* Seule Geist (boutons, interface) est préchargée : les autres polices se chargent quand une page en a
@@ -80,9 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </HideOnHome>
         <WhatsAppFloat />
         <CookieBanner />
-        <ScrollUI />
-        <Cursor />
-        <MotionRoot />
+        <LazyMotion />
       </body>
     </html>
   );

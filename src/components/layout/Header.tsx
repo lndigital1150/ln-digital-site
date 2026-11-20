@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { nav, site } from "@/config/site";
 import { photos, type PhotoKey } from "@/config/images";
-import { gsap, getLenis, prefersReducedMotion } from "@/lib/motion";
+import { getLenis, loadMotion, prefersReducedMotion } from "@/lib/motion-state";
 import { whatsappUrl } from "@/lib/links";
 import Button from "@/components/ui/Button";
 
@@ -45,10 +45,26 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [open, pathname]);
 
-  // Animation du menu
+  // Animation du menu (GSAP chargé après le premier affichage)
+  const openRef = useRef(open);
+  openRef.current = open;
   useEffect(() => {
     const menu = menuRef.current;
     if (!menu) return;
+    let dead = false;
+    loadMotion().then(({ gsap }) => {
+      if (dead) return;
+      buildTimeline(gsap, menu);
+      // Menu ouvert avant la fin du chargement : on joue l'ouverture maintenant
+      if (openRef.current) tl.current?.play();
+    });
+    return () => {
+      dead = true;
+      tl.current?.kill();
+    };
+  }, []);
+
+  const buildTimeline = (gsap: typeof import("gsap").gsap, menu: HTMLDivElement) => {
     const reduce = prefersReducedMotion();
     tl.current = gsap
       .timeline({ paused: true })
@@ -71,21 +87,22 @@ export default function Header() {
         "<",
       )
       .fromTo(menu.querySelector(".menu__foot"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: reduce ? 0 : 0.8 }, "<0.2");
-    return () => {
-      tl.current?.kill();
-    };
-  }, []);
+  };
 
+  const firstOpenEffect = useRef(true);
   useEffect(() => {
+    if (firstOpenEffect.current) {
+      firstOpenEffect.current = false;
+      if (!open) return; // premier rendu, menu fermé : rien à faire
+    }
     const t = tl.current;
-    if (!t) return;
     if (open) {
-      t.timeScale(1).play();
+      t?.timeScale(1).play();
       getLenis()?.stop();
       document.body.style.overflow = "hidden";
       setTimeout(() => menuRef.current?.querySelector<HTMLAnchorElement>(".menu__link")?.focus(), 400);
     } else {
-      t.timeScale(2).reverse(); // fermeture plus rapide que l'ouverture
+      t?.timeScale(2).reverse(); // fermeture plus rapide que l'ouverture
       if (window.location.pathname !== "/") getLenis()?.start(); // l'accueil ne défile jamais
       document.body.style.overflow = "";
     }
