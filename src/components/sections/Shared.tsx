@@ -74,35 +74,36 @@ export function PageHero({
           </nav>
         </div>
         <div className="page-hero__grid">
-          <h1 className="h1" data-split>
+          {/* En-tête de page animé en CSS (« hero-in ») dès le premier affichage, sans attendre le JavaScript :
+              c'est le premier contenu visible de la page (meilleur LCP). */}
+          <h1 className="h1 hero-in">
             {title}
           </h1>
           <div className="stack">
             {intro && (
-              <div className="lead" data-reveal data-delay="0.3">
+              <div className="lead hero-in hero-in--2">
                 {intro}
               </div>
             )}
             {hand && (
-              <p className="hand" data-reveal data-delay="0.45">
+              <p className="hand hero-in hero-in--3">
                 {hand}
               </p>
             )}
             {children && (
-              <div data-reveal data-delay="0.55">
+              <div className="hero-in hero-in--4">
                 {children}
               </div>
             )}
           </div>
         </div>
         {image && (
-          <div className="page-hero__visual">
+          <div className="page-hero__visual hero-in hero-in--photo">
             <Photo
               name={image}
               className="ratio-21-9"
               sizes="100vw"
               priority
-              reveal
               parallax={10}
               tag={imageTag}
               delay={0.2}

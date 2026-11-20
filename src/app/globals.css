@@ -892,3 +892,13 @@ body { --font-serif: var(--font-newsreader), "Cormorant Garamond", Georgia, seri
 @keyframes img-in { from { opacity: 0; } }
 /* Pause des animations : le zoom lent s'arrête, mais le fondu d'apparition de la photo se termine */
 .hero2.is-paused .hero2__slide.is-active img, .motion-paused .hero2__slide.is-active img { animation-play-state: paused, running; }
+
+/* ---------- En-tête des pages intérieures : entrée en CSS dès le premier affichage ---------- */
+/* Opacité de départ 0,01 : invisible à l'œil, mais compté comme affiché par le navigateur (LCP) */
+.js-motion .hero-in { animation: hero-in 1.2s var(--ease-out) backwards; }
+.js-motion .hero-in--2 { animation-delay: 0.15s; }
+.js-motion .hero-in--3 { animation-delay: 0.25s; }
+.js-motion .hero-in--4 { animation-delay: 0.35s; }
+.js-motion .hero-in--photo { animation: hero-in-photo 1.6s var(--ease-out) 0.2s backwards; }
+@keyframes hero-in { from { opacity: 0.01; transform: translateY(36px); } }
+@keyframes hero-in-photo { from { opacity: 0.01; transform: translateY(24px) scale(0.98); } }
