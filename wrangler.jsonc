@@ -1,0 +1,27 @@
+{
+  // Configuration Cloudflare Workers du site LN Digital (adaptateur OpenNext pour Next.js)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ln-digital-site",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-20",
+  "compatibility_flags": [
+    // API Node.js (nécessaire à Next.js et au webhook Stripe : node:crypto)
+    "nodejs_compat",
+    // Autorise les appels sortants (Resend, Stripe)
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      // Référence du worker vers lui-même (doit correspondre à "name" ci-dessus)
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "ln-digital-site"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
