@@ -212,10 +212,13 @@ export default function MotionRoot() {
 
         // Mots qui s'illuminent
         q("[data-scrub]").forEach((el) => {
-          const split = SplitText.create(el, { type: "words" });
+          // aria « none » : les mots restent du texte lisible normalement par les lecteurs d'écran
+          // (pas d'aria-label ajouté sur un <p>, refusé par les contrôles d'accessibilité)
+          const split = SplitText.create(el, { type: "words", aria: "none" });
           gsap.fromTo(
             split.words,
-            { opacity: 0.16 },
+            // Opacité de départ 0,42 : contraste ≥ 3:1 même avant l'illumination (texte de grande taille, WCAG AA)
+            { opacity: 0.42 },
             {
               opacity: 1,
               ease: "none",
