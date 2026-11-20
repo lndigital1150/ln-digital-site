@@ -370,8 +370,9 @@ a:focus-visible .photo--zoom img { transform: scale(1.06); }
 @media (hover: hover) and (pointer: fine) { .reel2__item:hover .reel2__thumb img { transform: scale(1.18); } }
 .reel2__item.is-active .reel2__thumb::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px var(--orange-vibrant); }
 .reel2__text { display: grid; gap: 4px; text-align: left; }
-.reel2__title { font: 500 11px/1 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
-.reel2__sub { font: 300 11px/1 var(--font-serif); text-transform: uppercase; letter-spacing: 0.02em; color: var(--blanc-lavande); white-space: nowrap; }
+.reel2__title { font: 500 12px/1 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+/* Sous-titre en Geist (déjà chargée) : aucune autre police à télécharger sur l'accueil ; 12 px = lisible (Lighthouse) */
+.reel2__sub { font: 400 12px/1 var(--font-sans); text-transform: uppercase; letter-spacing: 0.04em; color: var(--on-dark-muted); white-space: nowrap; }
 
 /* Intro du héros en CSS pur : elle démarre dès le premier affichage, sans attendre le JavaScript
    (le contenu principal s'affiche plus tôt → meilleur LCP). Seulement si les animations sont actives. */
@@ -873,3 +874,15 @@ html.is-home, html.is-home body { overflow: hidden; overscroll-behavior: none; h
 @media (max-width: 699px) { .hero2__legal { padding-right: calc(var(--gutter) + 64px); font-size: 12px; gap: 2px 12px; } }
 /* Filet de sécurité : écran trop bas (téléphone à l'horizontale) → défilement autorisé pour ne rien rendre inaccessible */
 @media (max-height: 559px) { html.is-home, html.is-home body { overflow: auto; height: auto; } }
+
+/* ---------- Performance de l'accueil ---------- */
+/* Menu en sommeil tant qu'on ne s'en approche pas (voir Header.tsx) : ni polices ni photos chargées d'avance */
+.menu--dormant { display: none; }
+/* Textes réservés aux lecteurs d'écran : police de l'interface (déjà chargée), pas de téléchargement en plus */
+.sr-only { font-family: var(--font-sans); }
+/* Police à empattements définie au niveau du <body> seulement : des éléments de mesure temporaires
+   ajoutés hors du <body> (bibliothèques d'animation) la téléchargeaient pour rien sur l'accueil. */
+:root { --font-serif: "Cormorant Garamond", Georgia, serif; }
+body { --font-serif: var(--font-newsreader), "Cormorant Garamond", Georgia, serif; }
+/* Accueil : tout le texte visible est en Geist (seule police préchargée) — Inter n'y est pas téléchargée */
+.is-home body { font-family: var(--font-sans); }

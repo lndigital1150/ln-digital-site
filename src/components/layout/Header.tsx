@@ -15,6 +15,10 @@ const menuImages: PhotoKey[] = ["heroMain", "web", "pricingHero", "gardenPath", 
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  // Menu « en sommeil » (display: none) tant que personne ne s'en approche : ses polices et photos
+  // ne sont pas téléchargées au premier affichage. Il se prépare dès le survol ou le focus du bouton.
+  const [armed, setArmed] = useState(false);
+  const arm = () => setArmed(true);
   const [active, setActive] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -158,7 +162,13 @@ export default function Header() {
               className="menu-trigger"
               aria-expanded={open}
               aria-controls="menu"
-              onClick={() => setOpen((o) => !o)}
+              onPointerEnter={arm}
+              onTouchStart={arm}
+              onFocus={arm}
+              onClick={() => {
+                arm();
+                setOpen((o) => !o);
+              }}
             >
               {/* Monogramme LN (version une couleur, découpe « petite taille » du kit) */}
               <svg className="menu-trigger__icon" viewBox="0 0 256 256" aria-hidden="true">
@@ -176,7 +186,7 @@ export default function Header() {
       <div
         ref={menuRef}
         id="menu"
-        className="menu"
+        className={`menu${armed ? "" : " menu--dormant"}`}
         role="dialog"
         aria-modal="true"
         aria-label="Menu"
