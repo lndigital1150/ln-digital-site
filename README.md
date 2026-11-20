@@ -113,10 +113,17 @@ Slogan retenu : **« Connecter votre entreprise à ses clients. »** — il prol
 Aucune donnée de carte ne transite par le site : le paiement se fait sur la page sécurisée de Stripe.
 Le montant est toujours calculé côté serveur à partir de `pricing.ts`.
 
-### 3.3 Mise en ligne
-Le plus simple : [Vercel](https://vercel.com) (créateurs de Next.js). Importez le dossier `site`,
-ajoutez les variables d'environnement, puis reliez votre nom de domaine. Mettez à jour
-`NEXT_PUBLIC_SITE_URL` avec l'adresse définitive.
+### 3.3 Mise en ligne (Cloudflare Workers)
+Le site est hébergé sur **Cloudflare Workers** grâce à l’adaptateur OpenNext (`@opennextjs/cloudflare`).
+Le dépôt GitHub est relié à Cloudflare : **chaque envoi sur la branche `main` met le site à jour automatiquement.**
+
+- `npm run build` : compilation complète pour Cloudflare (Next.js puis OpenNext) — c’est la commande utilisée par Cloudflare.
+- `npm run build:next` puis `npm run start` : version de production classique sur votre PC (http://localhost:3000).
+- `npm run preview` : test local dans le moteur de Cloudflare.
+- Configuration : `wrangler.jsonc` (nom du worker, options) et `open-next.config.ts`.
+
+Variables d’environnement (Resend, Stripe, `NEXT_PUBLIC_SITE_URL`…) : à renseigner dans le tableau de bord Cloudflare
+(Workers & Pages → ln-digital-site → Settings → *Variables and secrets*, et *Build variables* pour celles qui commencent par `NEXT_PUBLIC_`).
 
 ---
 
