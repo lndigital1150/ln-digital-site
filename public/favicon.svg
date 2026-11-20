@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">LN Digital</title>
+  <rect width="256" height="256" rx="48" fill="#34205F"/>
+  <g id="symbole" transform="translate(17.92 17.92) scale(0.86)">
+    <path fill="#F7F5FC" d="M20 24H64V188H100V232H20Z M236 232H192V68H156V24H236Z"/>
+    <path fill="#FF8138" d="M86.9 24H124.4L169.1 232H131.6Z"/>
+  </g>
+</svg>
