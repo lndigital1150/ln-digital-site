@@ -300,7 +300,7 @@ a:focus-visible .photo--zoom img { transform: scale(1.06); }
 .hero2__slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.6s var(--ease-in-out); }
 .hero2__slide img { object-fit: cover; transform: scale(1.06); filter: saturate(0.6) brightness(0.68) contrast(1.05); }
 .hero2__slide.is-active { opacity: 0.225; } /* intensité des photos de fond (0 = invisibles, 1 = pleine) */
-.hero2__slide.is-active img { animation: kenburns 11s linear forwards; }
+.hero2__slide.is-active img { animation: kenburns 11s linear forwards, img-in 1.2s ease backwards; }
 @keyframes kenburns {
   from { transform: scale(1.06) translate3d(0, 0, 0); }
   to { transform: scale(1.22) translate3d(-2%, -1.5%, 0); }
@@ -887,3 +887,8 @@ html.is-home, html.is-home body { overflow: hidden; overscroll-behavior: none; h
 body { --font-serif: var(--font-newsreader), "Cormorant Garamond", Georgia, serif; }
 /* Accueil : tout le texte visible est en Geist (seule police préchargée) — Inter n'y est pas téléchargée */
 .is-home body { font-family: var(--font-sans); }
+/* Photos de l'accueil chargées après la page : elles apparaissent en fondu plutôt que d'un coup */
+.reel2__thumb img { animation: img-in 0.6s ease backwards; }
+@keyframes img-in { from { opacity: 0; } }
+/* Pause des animations : le zoom lent s'arrête, mais le fondu d'apparition de la photo se termine */
+.hero2.is-paused .hero2__slide.is-active img, .motion-paused .hero2__slide.is-active img { animation-play-state: paused, running; }

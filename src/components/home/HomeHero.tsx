@@ -38,15 +38,20 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   // Photos de fond chargées au fil de l'eau (la photo affichée + la suivante), pas les 10 d'un coup.
-  // Au démarrage, seule la première : la suivante attend la fin du chargement de la page.
+  // Toutes les photos de l'accueil (fond à 22 % d'opacité, vignettes du bandeau) attendent la fin du
+  // chargement de la page : elles ne ralentissent plus le premier affichage, et apparaissent en fondu.
   const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0]));
+  const [pageLoaded, setPageLoaded] = useState(false);
   const [ready, setReady] = useState(false);
   const hovering = useRef(false);
   const yearRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     let t = 0;
-    const go = () => (t = window.setTimeout(() => setReady(true), 1500));
+    const go = () => {
+      setPageLoaded(true);
+      t = window.setTimeout(() => setReady(true), 1500);
+    };
     if (document.readyState === "complete") go();
     else window.addEventListener("load", go, { once: true });
     return () => {
@@ -160,9 +165,9 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
         <div className="hero2__parallax">
           {items.map((it, i) => (
             <div key={it.href} className={`hero2__slide${i === active ? " is-active" : ""}`}>
-              {loaded.has(i) && (
+              {pageLoaded && loaded.has(i) && (
                 // Photo à 22 % d'opacité, assombrie et désaturée : une qualité basse suffit et allège fortement la page
-                <Image src={photos[it.image].src} alt="" fill sizes="100vw" priority={i === 0} quality={25} />
+                <Image src={photos[it.image].src} alt="" fill sizes="100vw" quality={25} />
               )}
             </div>
           ))}
@@ -219,7 +224,7 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
 
       {/* Bandeau des services façon générique de film */}
       <div className="hero2__reel" onPointerLeave={onReelLeave}>
-        <HeroReel items={items} active={active} onOver={onReelOver} paused={paused} />
+        <HeroReel items={items} active={active} onOver={onReelOver} paused={paused} showThumbs={pageLoaded} />
       </div>
 
       <div className="hero2__foot">
@@ -263,11 +268,13 @@ function HeroReel({
   active,
   onOver,
   paused,
+  showThumbs,
 }: {
   items: ReelItem[];
   active: number;
   onOver: (i: number) => void;
   paused: boolean;
+  showThumbs: boolean;
 }) {
   const track = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);
@@ -329,7 +336,7 @@ function HeroReel({
       >
         <span className="reel2__thumb">
           {/* Vignette affichée en 52 × 30 px : on demande la bonne taille et une compression plus forte */}
-          <Image src={photos[it.image].src} alt="" width={104} height={60} sizes="52px" quality={50} />
+          {showThumbs && <Image src={photos[it.image].src} alt="" width={104} height={60} sizes="52px" quality={50} />}
         </span>
         <span className="reel2__text">
           <span className="reel2__title">{it.title}</span>
