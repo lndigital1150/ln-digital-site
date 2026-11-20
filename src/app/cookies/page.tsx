@@ -57,12 +57,6 @@ export default function CookiesPage() {
                   </td>
                   <td>Fermeture de l&apos;onglet ou envoi de la demande</td>
                 </tr>
-                <tr>
-                  <td>ln-intro</td>
-                  <td>Stockage de session (fonctionnel)</td>
-                  <td>Ne pas rejouer l&apos;animation d&apos;introduction pendant votre visite</td>
-                  <td>Fermeture de l&apos;onglet</td>
-                </tr>
               </tbody>
             </table>
           ),

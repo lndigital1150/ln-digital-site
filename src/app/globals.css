@@ -35,6 +35,7 @@
   /* Mouvements */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-expo-in-out: cubic-bezier(0.87, 0, 0.13, 1);
 
   color-scheme: dark;
 }
@@ -372,11 +373,31 @@ a:focus-visible .photo--zoom img { transform: scale(1.06); }
 .reel2__title { font: 500 11px/1 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
 .reel2__sub { font: 300 11px/1 var(--font-serif); text-transform: uppercase; letter-spacing: 0.02em; color: var(--blanc-lavande); white-space: nowrap; }
 
-/* État avant l'intro (si animations actives) */
-.js-motion .hero2__bg,
-.js-motion .hero2 .wm__l1, .js-motion .hero2 .wm__l2, .js-motion .hero2 .wm__diag,
-.js-motion .hero2__line, .js-motion .hero2__cta, .js-motion .reel2, .js-motion .hero2__foot > * { opacity: 0; }
-.js-motion .hero2 .wm__name { opacity: 0; }
+/* Intro du héros en CSS pur : elle démarre dès le premier affichage, sans attendre le JavaScript
+   (le contenu principal s'affiche plus tôt → meilleur LCP). Seulement si les animations sont actives. */
+.js-motion .hero2__bg { animation: h-bg 2.4s var(--ease-out) backwards; }
+.js-motion .hero2 .wm__l1 { animation: h-l1 1.4s var(--ease-out) 0.1s backwards; }
+.js-motion .hero2 .wm__l2 { animation: h-l2 1.4s var(--ease-out) 0.1s backwards; }
+.js-motion .hero2 .wm__diag { transform-box: fill-box; transform-origin: 50% 0; animation: h-diag 1.1s var(--ease-expo-in-out) 0.5s backwards; }
+.js-motion .hero2 .wm__clip { transform-box: fill-box; transform-origin: 0 0; animation: h-wipe 1.6s var(--ease-expo-in-out) 0.65s backwards; }
+.js-motion .hero2 .wm__name { animation: h-rise-26 1.6s var(--ease-out) 0.65s backwards; }
+.js-motion .hero2__cta { animation: h-rise-24 1.1s var(--ease-out) 0.3s backwards; }
+.js-motion .hero2__cta + .hero2__cta { animation-delay: 0.4s; }
+.js-motion .reel2 { animation: h-reel 1.4s var(--ease-out) 0.9s backwards; }
+.js-motion .hero2__foot > * { animation: h-rise-10 1s var(--ease-out) 1.1s backwards; }
+.js-motion .hero2__foot > :nth-child(2) { animation-delay: 1.2s; }
+.js-motion .hero2__foot > :nth-child(3) { animation-delay: 1.3s; }
+@keyframes h-bg { from { opacity: 0; transform: scale(1.25); } }
+@keyframes h-l1 { from { opacity: 0; transform: translateX(-140px); } }
+@keyframes h-l2 { from { opacity: 0; transform: translateX(140px); } }
+@keyframes h-diag { from { transform: scaleY(0); } }
+@keyframes h-wipe { from { transform: scaleX(0); } }
+@keyframes h-rise-26 { from { opacity: 0; transform: translateY(26px); } }
+@keyframes h-rise-24 { from { opacity: 0.01; transform: translateY(24px); } }
+/* Opacité de départ 0,01 (et non 0) : invisible à l’œil, mais le navigateur compte le bouton comme affiché
+   dès le premier rendu — sinon le LCP est mesuré à la fin du fondu, après le chargement du JavaScript. */
+@keyframes h-rise-10 { from { opacity: 0; transform: translateY(10px); } }
+@keyframes h-reel { from { opacity: 0; transform: translateY(100%); } }
 
 @media (max-width: 699px) {
   .hero2 { min-height: 560px; }
@@ -719,7 +740,7 @@ a:focus-visible .photo--zoom img { transform: scale(1.06); }
 .cookie {
   position: fixed; left: 16px; bottom: 16px; z-index: 65; max-width: 420px;
   background: var(--profond-nuit); color: var(--blanc-lavande); border: 1px solid var(--on-dark-line);
-  padding: 18px; display: grid; gap: 14px; font-size: 14px; line-height: 1.5;
+  padding: 18px; display: grid; gap: 14px; font: 400 14px/1.5 var(--font-sans); /* police déjà préchargée : pas de saut au chargement */
 }
 @media (max-width: 599px) { .cookie { right: 16px; bottom: 88px; } }
 .cookie p { color: var(--on-dark-muted); }
@@ -738,21 +759,13 @@ a:focus-visible .photo--zoom img { transform: scale(1.06); }
 .cursor.is-label .cursor__dot { opacity: 0; }
 .cursor.is-hidden { opacity: 0; }
 
-/* Préchargement & transitions */
-.preloader { position: fixed; inset: 0; z-index: 300; background: var(--profond-nuit); display: grid; place-items: center; color: var(--blanc-lavande); }
-.preloader__inner { display: grid; justify-items: center; gap: 22px; }
-.preloader__logo { width: 72px; height: 72px; }
-.preloader__count { font-family: var(--font-serif); font-style: italic; font-weight: 200; font-size: clamp(4rem, 14vw, 10rem); line-height: 0.85; letter-spacing: -0.04em; }
-.preloader__line { width: 180px; height: 1px; background: var(--on-dark-line); }
-.preloader__line span { display: block; height: 100%; background: var(--orange-vibrant); transform-origin: left; transform: scaleX(0); }
-.preloader__caption { font: 500 12px/1 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-dark-muted); }
+/* Transitions de page */
 .curtain { position: fixed; inset: 0; z-index: 250; background: var(--violet-digital); pointer-events: none; transform-origin: top; transform: scaleY(0); }
 
 /* Avant animation (évite le flash) — seulement si JS actif et mouvement autorisé */
 .js-motion [data-reveal], .js-motion [data-stagger] > * { opacity: 0; }
 .js-motion [data-img-reveal] { clip-path: inset(100% 0 0 0); }
 .js-motion [data-split] { visibility: hidden; }
-.no-preloader .preloader { display: none; }
 
 /* ---------- Mouvement réduit ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -774,8 +787,11 @@ a, button, summary, label { -webkit-tap-highlight-color: transparent; }
 /* Retour immÃ©diat Ã  la pression (propriÃ©tÃ© Â« scale Â» : se combine avec l'effet magnÃ©tique) */
 .btn:active, .hero2__cta:active, .wa-float:active, .menu-trigger:active, .link-arrow:active, .faq__q:active .faq__icon { scale: 0.97; }
 
-.cookie { transition: opacity 0.4s var(--ease-out), translate 0.4s var(--ease-out); }
-@starting-style { .cookie { opacity: 0; translate: 0 16px; } }
+/* Bandeau cookies : présent dès le premier affichage (une apparition tardive retarderait le LCP),
+   masqué d'emblée si le choix a déjà été fait (classe « has-consent » posée par le script de démarrage). */
+.has-consent .cookie:not(.cookie--open) { display: none; }
+.js-motion .cookie { animation: cookie-in 0.5s var(--ease-out) 0.2s backwards; }
+@keyframes cookie-in { from { opacity: 0.01; translate: 0 16px; } }
 /* ---------- Accessibilité & ergonomie (audit UI/UX) ---------- */
 /* Contour de focus visible sur chaque fond (contraste ≥ 3:1) : l'orange ne ressort pas sur les fonds clairs ou violets */
 .theme-light :focus-visible, .theme-lavande :focus-visible { outline-color: var(--violet-profond); }

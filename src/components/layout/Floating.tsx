@@ -31,13 +31,12 @@ export function WhatsAppFloat() {
  * uniquement après consentement, d'éventuels outils de mesure d'audience.
  */
 export function CookieBanner() {
-  const [show, setShow] = useState(false);
+  // « auto » : rendu dès le serveur, masqué en CSS si un choix existe déjà (classe has-consent) ;
+  // « open » : rouvert depuis le lien « Gestion des cookies » ; « closed » : choix enregistré.
+  const [mode, setMode] = useState<"auto" | "open" | "closed">("auto");
 
   useEffect(() => {
-    try {
-      if (!localStorage.getItem("ln-consent")) setTimeout(() => setShow(true), 2600);
-    } catch {}
-    const reopen = () => setShow(true);
+    const reopen = () => setMode("open");
     window.addEventListener("ln:cookie-settings", reopen);
     return () => window.removeEventListener("ln:cookie-settings", reopen);
   }, []);
@@ -46,13 +45,14 @@ export function CookieBanner() {
     try {
       localStorage.setItem("ln-consent", JSON.stringify({ analytics, date: new Date().toISOString() }));
     } catch {}
+    document.documentElement.classList.add("has-consent");
     window.dispatchEvent(new CustomEvent("ln:consent", { detail: { analytics } }));
-    setShow(false);
+    setMode("closed");
   };
 
-  if (!show) return null;
+  if (mode === "closed") return null;
   return (
-    <div className="cookie" role="region" aria-label="Préférences cookies">
+    <div className={`cookie${mode === "open" ? " cookie--open" : ""}`} role="region" aria-label="Préférences cookies">
       <p>
         <strong style={{ color: "var(--blanc-lavande)" }}>Cookies.</strong> Ce site utilise uniquement des éléments
         strictement nécessaires à son fonctionnement. Aucun traceur publicitaire ou de mesure d&apos;audience n&apos;est

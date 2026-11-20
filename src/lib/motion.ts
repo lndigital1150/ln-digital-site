@@ -15,14 +15,12 @@ export { gsap, ScrollTrigger, SplitText };
 export const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* Fin de l'intro (préchargement) : les animations du haut de page attendent ce signal. */
-let resolveIntro: (() => void) | null = null;
-export const introDone: Promise<void> =
-  typeof window === "undefined" ? Promise.resolve() : new Promise<void>((r) => (resolveIntro = r));
-export const markIntroDone = () => {
-  resolveIntro?.();
-  resolveIntro = null;
-};
+/*
+ * Ancien signal « fin de l'écran d'intro ». L'écran de chargement (compteur 000 → 100) a été retiré :
+ * il retardait l'affichage du contenu de plusieurs secondes (score de performance).
+ * Le signal est conservé, déjà résolu, pour garder un seul point d'attente si on en remet un.
+ */
+export const introDone: Promise<void> = Promise.resolve();
 
 /*
  * Pause des animations automatiques (fonds qui défilent, bandeaux) — WCAG 2.2.2.

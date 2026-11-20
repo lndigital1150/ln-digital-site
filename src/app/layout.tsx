@@ -8,20 +8,22 @@ import Footer from "@/components/layout/Footer";
 import HideOnHome from "@/components/layout/HideOnHome";
 import { CookieBanner, WhatsAppFloat } from "@/components/layout/Floating";
 import MotionRoot from "@/components/motion/MotionRoot";
-import Preloader from "@/components/motion/Preloader";
 import Cursor from "@/components/motion/Cursor";
 import ScrollUI from "@/components/motion/ScrollUI";
 import JsonLd from "@/components/seo/JsonLd";
 
+/* Seule Geist (boutons, interface) est préchargée : les autres polices se chargent quand une page en a
+   besoin, sans bloquer le premier affichage (préchargées toutes ensemble, elles pesaient 250 Ko). */
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist", weight: ["400", "500", "600"] });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["400", "500"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["400", "500"], preload: false });
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-newsreader",
   weight: ["200", "300"],
   style: ["normal", "italic"],
+  preload: false,
 });
-const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat", weight: ["400"] });
+const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat", weight: ["400"], preload: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -49,10 +51,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-/* Script exécuté avant l'affichage : active les animations (sauf mouvement réduit)
-   et saute l'intro si elle a déjà été vue dans la session. Filet de sécurité : si
-   les animations ne démarrent pas, le contenu redevient visible après 4 s. */
-const bootScript = `(function(){try{var d=document.documentElement;var r=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r){d.classList.add('js-motion');}if(r||sessionStorage.getItem('ln-intro')){d.classList.add('no-preloader');}if(localStorage.getItem('ln-pause-animations')==='1'){d.classList.add('motion-paused');}if(location.pathname==='/'){d.classList.add('is-home');}setTimeout(function(){if(!d.classList.contains('motion-ready')){d.classList.remove('js-motion');}},6000);}catch(e){}})();`;
+/* Script exécuté avant l'affichage : active les animations (sauf mouvement réduit), mémorise
+   la pause des animations et masque le bandeau cookies si le choix a déjà été fait.
+   Filet de sécurité : si les animations ne démarrent pas, le contenu redevient visible après 6 s. */
+const bootScript = `(function(){try{var d=document.documentElement;var r=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r){d.classList.add('js-motion');}if(localStorage.getItem('ln-consent')){d.classList.add('has-consent');}if(localStorage.getItem('ln-pause-animations')==='1'){d.classList.add('motion-paused');}if(location.pathname==='/'){d.classList.add('is-home');}setTimeout(function(){if(!d.classList.contains('motion-ready')){d.classList.remove('js-motion');}},6000);}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -69,7 +71,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#contenu" className="skip-link">
           Aller au contenu
         </a>
-        <Preloader />
         <Header />
         <main id="contenu" tabIndex={-1}>
           {children}

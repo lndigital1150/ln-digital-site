@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   gsap,
   ScrollTrigger,
-  introDone,
   prefersReducedMotion,
   isMotionPaused,
   setMotionPaused,
@@ -44,18 +43,32 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  // Photos de fond chargées au fil de l'eau (la photo affichée + la suivante), pas les 10 d'un coup
-  const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0, 1]));
+  // Photos de fond chargées au fil de l'eau (la photo affichée + la suivante), pas les 10 d'un coup.
+  // Au démarrage, seule la première : la suivante attend la fin du chargement de la page.
+  const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0]));
+  const [ready, setReady] = useState(false);
   const hovering = useRef(false);
   const yearRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    let t = 0;
+    const go = () => (t = window.setTimeout(() => setReady(true), 1500));
+    if (document.readyState === "complete") go();
+    else window.addEventListener("load", go, { once: true });
+    return () => {
+      window.removeEventListener("load", go);
+      clearTimeout(t);
+    };
+  }, []);
+
+  useEffect(() => {
     setLoaded((prev) => {
-      const next = (active + 1) % items.length;
-      if (prev.has(active) && prev.has(next)) return prev;
-      return new Set([...prev, active, next]);
+      // La photo affichée toujours ; la suivante seulement une fois la page chargée
+      const wanted = ready ? [active, (active + 1) % items.length] : [active];
+      if (wanted.every((i) => prev.has(i))) return prev;
+      return new Set([...prev, ...wanted]);
     });
-  }, [active, items.length]);
+  }, [active, items.length, ready]);
 
   // Pause partagée avec tout le site (bouton du pied de page) ; mouvement réduit du système = immobile
   useEffect(() => {
@@ -80,46 +93,27 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
     if (yearRef.current) yearRef.current.textContent = String(year);
     if (prefersReducedMotion()) return;
 
-    let ctx: gsap.Context | null = null;
-    let cancelled = false;
     const cleanups: Array<() => void> = [];
 
-    introDone.then(() => {
-      if (cancelled) return;
-      ctx = gsap.context(() => {
-        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-        tl.fromTo(".hero2__bg", { scale: 1.25, opacity: 0 }, { scale: 1, opacity: 1, duration: 2.4 }, 0)
-          .fromTo(".wm__l1", { x: -140, opacity: 0 }, { x: 0, opacity: 1, duration: 1.4 }, 0.2)
-          .fromTo(".wm__l2", { x: 140, opacity: 0 }, { x: 0, opacity: 1, duration: 1.4 }, 0.2)
-          .fromTo(
-            ".wm__diag",
-            { scaleY: 0, opacity: 1, transformOrigin: "50% 0%" },
-            { scaleY: 1, duration: 1.1, ease: "expo.inOut" },
-            0.75,
-          )
-          .fromTo(".wm__clip", { attr: { width: 0 } }, { attr: { width: 700 }, duration: 1.6, ease: "expo.inOut" }, 0.9)
-          .fromTo(".wm__name", { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 1.6 }, 0.9)
-          .fromTo(".hero2__cta", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, stagger: 0.1 }, 1.6)
-          .fromTo(".reel2", { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.4 }, 1.7)
-          .fromTo(".hero2__foot > *", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 1, stagger: 0.1 }, 2);
-
-        // Compteur d'année façon « amorce de film »
-        const counter = { v: year - 26 };
-        tl.to(
-          counter,
-          {
-            v: year,
-            duration: 1.6,
-            ease: "power3.out",
-            onUpdate: () => {
-              if (yearRef.current) yearRef.current.textContent = String(Math.round(counter.v));
-            },
-          },
-          2,
-        );
-
-      }, el);
-    });
+    // L'intro (fond, logo, boutons, bandeau) est en CSS (globals.css) et démarre dès le premier affichage.
+    // Seul le compteur d'année façon « amorce de film » reste en JS ; il se termine quand le pied apparaît.
+    const counter = { v: year - 26 };
+    // Synchronisé sur l'animation CSS d'apparition de l'année (délai 1,2 s depuis le premier affichage)
+    const appear = yearRef.current?.parentElement?.getAnimations?.()[0];
+    const elapsed = typeof appear?.currentTime === "number" ? appear.currentTime : 0;
+    // Page déjà affichée depuis longtemps (JS chargé tard) : on ne rejoue pas le compteur sous les yeux du visiteur
+    if (elapsed <= 1600) {
+      const tween = gsap.to(counter, {
+        v: year,
+        duration: 1.6,
+        ease: "power3.out",
+        delay: Math.max(0, (1200 - elapsed) / 1000),
+        onUpdate: () => {
+          if (yearRef.current) yearRef.current.textContent = String(Math.round(counter.v));
+        },
+      });
+      cleanups.push(() => tween.kill());
+    }
 
     // Inclinaison du logo et parallaxe du fond à la souris
     if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
@@ -142,11 +136,7 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
       cleanups.push(() => el.removeEventListener("pointermove", move));
     }
 
-    return () => {
-      cancelled = true;
-      cleanups.forEach((c) => c());
-      ctx?.revert();
-    };
+    return () => cleanups.forEach((c) => c());
   }, []);
 
   const onReelOver = useCallback((i: number) => {
@@ -170,8 +160,8 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
           {items.map((it, i) => (
             <div key={it.href} className={`hero2__slide${i === active ? " is-active" : ""}`}>
               {loaded.has(i) && (
-                // Photo à 22 % d'opacité et désaturée : une qualité basse suffit et allège fortement la page
-                <Image src={photos[it.image].src} alt="" fill sizes="100vw" priority={i === 0} quality={40} />
+                // Photo à 22 % d'opacité, assombrie et désaturée : une qualité basse suffit et allège fortement la page
+                <Image src={photos[it.image].src} alt="" fill sizes="100vw" priority={i === 0} quality={25} />
               )}
             </div>
           ))}
@@ -288,12 +278,15 @@ function HeroReel({
     let slow = false;
     let focused = false;
     let boost = 0;
+    // Largeur mesurée une fois (puis au redimensionnement), pas à chaque image : évite un recalcul de mise en page forcé
+    let half = t.scrollWidth / 2;
+    const ro = new ResizeObserver(() => (half = t.scrollWidth / 2));
+    ro.observe(t);
     const tick = (_: number, dt: number) => {
       // À l'arrêt si l'utilisateur a mis en pause ou navigue au clavier dans le bandeau
       if (pausedRef.current || focused) return;
       const speed = (slow ? 6 : 30) + boost;
       x -= speed * (dt / 1000);
-      const half = t.scrollWidth / 2;
       if (half > 0 && x <= -half) x += half;
       t.style.transform = `translate3d(${x}px,0,0)`;
       boost *= 0.9;
@@ -315,6 +308,7 @@ function HeroReel({
     t.addEventListener("focusout", focusOut);
     return () => {
       gsap.ticker.remove(tick);
+      ro.disconnect();
       st.kill();
       t.removeEventListener("pointerenter", enter);
       t.removeEventListener("pointerleave", leave);
@@ -335,7 +329,8 @@ function HeroReel({
         aria-hidden={copy || undefined}
       >
         <span className="reel2__thumb">
-          <Image src={photos[it.image].src} alt="" width={192} height={112} sizes="96px" />
+          {/* Vignette affichée en 52 × 30 px : on demande la bonne taille et une compression plus forte */}
+          <Image src={photos[it.image].src} alt="" width={104} height={60} sizes="52px" quality={50} />
         </span>
         <span className="reel2__text">
           <span className="reel2__title">{it.title}</span>
