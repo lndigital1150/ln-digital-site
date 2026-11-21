@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 // GSAP n'est pas importé directement : il est chargé après la page, sur ordinateur seulement (loadMotion)
 import {
   afterLoadIdle,
@@ -83,7 +83,6 @@ export default function HeroShell({
     let t = 0;
     const go = () => {
       pageLoaded.current = true;
-      root.current?.querySelectorAll<HTMLImageElement>(".reel2__thumb img").forEach(loadImg);
       loadSlides(0);
       t = window.setTimeout(() => {
         preloadNext.current = true;
@@ -225,7 +224,10 @@ export default function HeroShell({
 
       {/* Bandeau des services façon générique de film */}
       <div className="hero2__reel" onPointerLeave={onReelLeave}>
-        <HeroReel items={items} active={active} onOver={onReelOver} paused={paused} />
+        {/* Frontière Suspense : le bandeau (20 liens) est hydraté dans une tâche séparée du reste du héros */}
+        <Suspense fallback={null}>
+          <HeroReel items={items} active={active} onOver={onReelOver} paused={paused} />
+        </Suspense>
       </div>
 
       <div className="hero2__foot">
@@ -278,6 +280,14 @@ function HeroReel({
     if (!a) return;
     if (state.current.paused || state.current.focused) a.pause();
     else a.play();
+  }, []);
+
+  // Vignettes : source posée après le chargement de la page, une fois le bandeau hydraté (frontière Suspense)
+  useEffect(() => {
+    const go = () => track.current?.querySelectorAll<HTMLImageElement>(".reel2__thumb img").forEach(loadImg);
+    if (document.readyState === "complete") go();
+    else window.addEventListener("load", go, { once: true });
+    return () => window.removeEventListener("load", go);
   }, []);
 
   useEffect(() => {

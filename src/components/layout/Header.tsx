@@ -3,14 +3,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { nav, site } from "@/config/site";
 import { photos, type PhotoKey } from "@/config/images";
 import { getLenis, loadMotion, prefersReducedMotion } from "@/lib/motion-state";
 import { whatsappUrl } from "@/lib/links";
 import Button from "@/components/ui/Button";
 
-const menuImages: PhotoKey[] = ["heroMain", "web", "pricingHero", "gardenPath", "aboutTeam", "contactHandshake"];
+const menuImages: PhotoKey[] = [
+  "heroMain",
+  "web",
+  "pricingHero",
+  "gardenPath",
+  "aboutTeam",
+  "contactHandshake",
+];
 
 export default function Header() {
   const pathname = usePathname();
@@ -37,7 +44,8 @@ export default function Header() {
       // Menu ouvert : en-tête minimal aussi, pour que le bouton « Fermer » reste visible sur grand écran
       h.classList.toggle("header--hero", onHero || open);
       h.classList.toggle("is-scrolled", y > 40 && !onHero);
-      if (!open) h.classList.toggle("is-hidden", y > last && y > 300 && !onHero);
+      if (!open)
+        h.classList.toggle("is-hidden", y > last && y > 300 && !onHero);
       last = y;
     };
     onScroll();
@@ -65,7 +73,10 @@ export default function Header() {
     };
   }, [armed]);
 
-  const buildTimeline = (gsap: typeof import("gsap").gsap, menu: HTMLDivElement) => {
+  const buildTimeline = (
+    gsap: typeof import("gsap").gsap,
+    menu: HTMLDivElement,
+  ) => {
     const reduce = prefersReducedMotion();
     tl.current = gsap
       .timeline({ paused: true })
@@ -73,12 +84,21 @@ export default function Header() {
       .fromTo(
         menu,
         { clipPath: "inset(0% 0% 100% 0%)" },
-        { clipPath: "inset(0% 0% 0% 0%)", duration: reduce ? 0 : 0.7, ease: "expo.inOut" },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          duration: reduce ? 0 : 0.7,
+          ease: "expo.inOut",
+        },
       )
       .fromTo(
         menu.querySelectorAll(".menu__link"),
         { yPercent: 110 },
-        { yPercent: 0, duration: reduce ? 0 : 0.8, stagger: 0.05, ease: "expo.out" },
+        {
+          yPercent: 0,
+          duration: reduce ? 0 : 0.8,
+          stagger: 0.05,
+          ease: "expo.out",
+        },
         "-=0.35",
       )
       .fromTo(
@@ -87,7 +107,12 @@ export default function Header() {
         { opacity: 1, scale: 1, duration: reduce ? 0 : 1 },
         "<",
       )
-      .fromTo(menu.querySelector(".menu__foot"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: reduce ? 0 : 0.8 }, "<0.2");
+      .fromTo(
+        menu.querySelector(".menu__foot"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: reduce ? 0 : 0.8 },
+        "<0.2",
+      );
   };
 
   const firstOpenEffect = useRef(true);
@@ -101,7 +126,13 @@ export default function Header() {
       t?.timeScale(1).play();
       getLenis()?.stop();
       document.body.style.overflow = "hidden";
-      setTimeout(() => menuRef.current?.querySelector<HTMLAnchorElement>(".menu__link")?.focus(), 400);
+      setTimeout(
+        () =>
+          menuRef.current
+            ?.querySelector<HTMLAnchorElement>(".menu__link")
+            ?.focus(),
+        400,
+      );
     } else {
       t?.timeScale(2).reverse(); // fermeture plus rapide que l'ouverture
       if (window.location.pathname !== "/") getLenis()?.start(); // l'accueil ne défile jamais
@@ -137,13 +168,21 @@ export default function Header() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <>
-      <header ref={headerRef} className={`header${pathname === "/" ? " header--hero" : ""}`}>
+      <header
+        ref={headerRef}
+        className={`header${pathname === "/" ? " header--hero" : ""}`}
+      >
         <div className="container header__inner">
-          <Link href="/" className="header__logo" aria-label={`${site.name} — accueil`}>
+          <Link
+            href="/"
+            className="header__logo"
+            aria-label={`${site.name} — accueil`}
+          >
             {/* Emplacement du logo : fichier public/brand/ln-digital-horizontal-inverse.svg */}
             <img
               className="header__full"
@@ -152,14 +191,23 @@ export default function Header() {
               width={123}
               height={26}
             />
-            <img className="header__mono" src="/brand/ln-digital-monogramme-inverse.svg" alt="" width={30} height={30} />
+            <img
+              className="header__mono"
+              src="/brand/ln-digital-monogramme-inverse.svg"
+              alt=""
+              width={30}
+              height={30}
+            />
           </Link>
 
           <nav className="header__nav" aria-label="Navigation principale">
             <ul>
               {nav.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+                  <Link
+                    href={item.href}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                  >
                     <span className="roll">
                       <span>{item.label}</span>
                       <span aria-hidden="true">{item.label}</span>
@@ -171,7 +219,13 @@ export default function Header() {
           </nav>
 
           <div className="header__actions">
-            <Button href="/contact#devis" variant="accent" size="small" className="header__cta" magnetic={false}>
+            <Button
+              href="/contact#devis"
+              variant="accent"
+              size="small"
+              className="header__cta"
+              magnetic={false}
+            >
               Demander un devis
             </Button>
             <button
@@ -189,7 +243,11 @@ export default function Header() {
               }}
             >
               {/* Monogramme LN (version une couleur, découpe « petite taille » du kit) */}
-              <svg className="menu-trigger__icon" viewBox="0 0 256 256" aria-hidden="true">
+              <svg
+                className="menu-trigger__icon"
+                viewBox="0 0 256 256"
+                aria-hidden="true"
+              >
                 <path
                   fill="currentColor"
                   d="M20 24H64V188H100V232H20Z M236 232H192V68H156V24H236Z M86.9 24H124.4L169.1 232H131.6Z"
@@ -211,47 +269,66 @@ export default function Header() {
         aria-hidden={!open}
         inert={!open}
       >
-        <div className="menu__grid">
-          <nav aria-label="Menu principal">
-            <ul className="menu__list">
-              {nav.map((item, i) => (
-                <li key={item.href} className="menu__item">
-                  <Link
-                    href={item.href}
-                    className="menu__link"
-                    aria-current={isActive(item.href) ? "page" : undefined}
-                    onMouseEnter={() => setActive(i)}
-                    onFocus={() => setActive(i)}
-                    onClick={() => setOpen(false)}
-                  >
-
-
-                    {item.label}
-                  </Link>
-                </li>
+        {/* Frontières Suspense : React hydrate le menu (fermé au chargement) dans une tâche séparée,
+            au lieu de tout hydrater d'un bloc (Total Blocking Time) */}
+        <Suspense fallback={null}>
+          <div className="menu__grid">
+            <nav aria-label="Menu principal">
+              <ul className="menu__list">
+                {nav.map((item, i) => (
+                  <li key={item.href} className="menu__item">
+                    <Link
+                      href={item.href}
+                      className="menu__link"
+                      aria-current={isActive(item.href) ? "page" : undefined}
+                      onMouseEnter={() => setActive(i)}
+                      onFocus={() => setActive(i)}
+                      onClick={() => setOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <div className="menu__preview" aria-hidden="true">
+              {menuImages.map((k, i) => (
+                <div
+                  key={k}
+                  className={`photo${i === active ? " is-active" : ""}`}
+                >
+                  <Image src={photos[k].src} alt="" fill sizes="40vw" />
+                </div>
               ))}
-            </ul>
-          </nav>
-          <div className="menu__preview" aria-hidden="true">
-            {menuImages.map((k, i) => (
-              <div key={k} className={`photo${i === active ? " is-active" : ""}`}>
-                <Image src={photos[k].src} alt="" fill sizes="40vw" />
-              </div>
-            ))}
+            </div>
           </div>
-        </div>
-        <div className="menu__foot">
-          <span className="label label--muted">{site.zone}</span>
-          <Link href="/contact#devis" className="link-arrow" onClick={() => setOpen(false)}>
-            Demander un devis
-          </Link>
-          <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="link-arrow">
-            WhatsApp {site.whatsapp.display}
-          </a>
-          <a href={site.instagram.url} target="_blank" rel="noopener noreferrer" className="link-arrow">
-            Instagram {site.instagram.handle}
-          </a>
-        </div>
+          <div className="menu__foot">
+            <span className="label label--muted">{site.zone}</span>
+            <Link
+              href="/contact#devis"
+              className="link-arrow"
+              onClick={() => setOpen(false)}
+            >
+              Demander un devis
+            </Link>
+            <a
+              href={whatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-arrow"
+            >
+              WhatsApp {site.whatsapp.display}
+            </a>
+            <a
+              href={site.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-arrow"
+            >
+              Instagram {site.instagram.handle}
+            </a>
+          </div>
+        </Suspense>
       </div>
     </>
   );
