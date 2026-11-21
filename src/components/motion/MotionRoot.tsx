@@ -31,6 +31,13 @@ import {
  *   data-tilt         → inclinaison 3D au survol
  *   data-chapter      → section signalée dans l'indicateur de chapitre
  */
+/** Rend la main au navigateur entre deux lots de travail (scheduler.yield si disponible). */
+const yieldToMain = () => {
+  const sch = (globalThis as unknown as { scheduler?: { yield?: () => Promise<void> } }).scheduler;
+  if (sch?.yield) return sch.yield();
+  return new Promise<void>((r) => setTimeout(r, 0));
+};
+
 export default function MotionRoot() {
   const pathname = usePathname();
   const router = useRouter();
@@ -142,10 +149,14 @@ export default function MotionRoot() {
     isPop.current = false;
 
     // Lecteurs d'écran / clavier : après un changement de page, le focus va au contenu principal
+    const isFirst = firstRun.current;
     if (firstRun.current) firstRun.current = false;
     else document.getElementById("contenu")?.focus({ preventScroll: true });
 
-    if (fromHistory) {
+    if (isFirst) {
+      // Premier passage : ce moteur démarre après le chargement de la page (LazyMotion). Le navigateur a déjà
+      // placé la page (ancre éventuelle comprise) et le visiteur a peut-être défilé : on ne touche à rien.
+    } else if (fromHistory) {
       // Retour arrière : on restaure la position une fois la page mise en place
       const y = positions.current[window.location.pathname] ?? 0;
       getLenis()?.scrollTo(0, { immediate: true, force: true });
@@ -184,9 +195,22 @@ export default function MotionRoot() {
         return;
       }
 
-      ctx = gsap.context(() => {
-        const q = <T extends HTMLElement = HTMLElement>(sel: string) => gsap.utils.toArray<T>(sel);
+      /*
+       * Initialisation découpée en petits lots (titres, mots, apparitions, photos…) séparés par une pause :
+       * le navigateur reprend la main entre chaque lot, aucune tâche ne bloque le fil principal longtemps
+       * (Total Blocking Time). Chaque lot est ajouté au même contexte GSAP (nettoyage groupé).
+       */
+      const context = gsap.context(() => {});
+      ctx = context;
+      const q = <T extends HTMLElement = HTMLElement>(sel: string) => gsap.utils.toArray<T>(sel);
+      const batch = async (fn: () => void) => {
+        if (cancelled) return false;
+        context.add(fn);
+        await yieldToMain();
+        return !cancelled;
+      };
 
+      if (!(await batch(() => {
         // Titres ligne par ligne
         q("[data-split]").forEach((el) => {
           SplitText.create(el, {
@@ -210,6 +234,8 @@ export default function MotionRoot() {
           });
         });
 
+      }))) return;
+      if (!(await batch(() => {
         // Mots qui s'illuminent
         q("[data-scrub]").forEach((el) => {
           // aria « none » : les mots restent du texte lisible normalement par les lecteurs d'écran
@@ -228,6 +254,8 @@ export default function MotionRoot() {
           );
         });
 
+      }))) return;
+      if (!(await batch(() => {
         // Apparitions
         q("[data-reveal]").forEach((el) => {
           gsap.fromTo(
@@ -256,6 +284,8 @@ export default function MotionRoot() {
           );
         });
 
+      }))) return;
+      if (!(await batch(() => {
         // Photos : rideau + zoom arrière
         q("[data-img-reveal]").forEach((el) => {
           const dir = el.dataset.imgReveal;
@@ -270,6 +300,8 @@ export default function MotionRoot() {
           if (img) tl.fromTo(img, { scale: 1.35 }, { scale: 1, duration: 1.8, ease: "expo.out" }, 0.1);
         });
 
+      }))) return;
+      if (!(await batch(() => {
         // Parallaxe
         q("[data-parallax]").forEach((el) => {
           const amt = parseFloat(el.dataset.parallax || "10");
@@ -302,6 +334,8 @@ export default function MotionRoot() {
           );
         });
 
+      }))) return;
+      if (!(await batch(() => {
         // Chapitres
         const chapters = q("[data-chapter]");
         chapters.forEach((el, i) => {
@@ -320,7 +354,7 @@ export default function MotionRoot() {
           });
         });
         window.dispatchEvent(new CustomEvent("ln:chapters", { detail: { total: chapters.length } }));
-      });
+      }))) return;
 
       // Interactions au pointeur (bureau uniquement)
       if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
@@ -376,7 +410,11 @@ export default function MotionRoot() {
       ScrollTrigger.refresh();
     };
 
-    run();
+    run().catch((err) => {
+      // Une erreur d'animation ne doit jamais laisser du contenu masqué
+      console.error("[animations]", err);
+      root.classList.remove("js-motion");
+    });
 
     // Recalcul après chargement des images
     const onLoad = () => ScrollTrigger.refresh();

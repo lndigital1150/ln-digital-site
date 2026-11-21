@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { preload } from "react-dom";
 import Photo from "@/components/ui/Photo";
 import Button from "@/components/ui/Button";
 import Marquee from "@/components/ui/Marquee";
@@ -52,6 +53,10 @@ export function PageHero({
   crumbs: { name: string; path: string }[];
   children?: ReactNode;
 }) {
+  // Police du titre préchargée sur les pages intérieures : elle arrive avant le premier affichage, le titre
+  // ne change pas de largeur ensuite (pas de décalage de mise en page). L'accueil, lui, ne la charge pas.
+  preload("/fonts/newsreader-latin-normal.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  preload("/fonts/newsreader-latin-italic.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   return (
     <section className="page-hero theme-dark" data-chapter={label}>
       <BreadcrumbJsonLd items={crumbs} />

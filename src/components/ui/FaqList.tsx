@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useLayoutEffect, useRef, useState } from "react";
-import { gsap, prefersReducedMotion } from "@/lib/motion";
+import { loadMotion, prefersReducedMotion } from "@/lib/motion-state";
 import type { Faq } from "@/config/faq";
 import { PlusIcon } from "./Icons";
 
@@ -13,27 +13,39 @@ export default function FaqList({ items }: { items: Faq[] }) {
   const first = useRef(true);
 
   useLayoutEffect(() => {
-    const dur = prefersReducedMotion() ? 0 : 0.42; // ouverture ; la fermeture est plus rapide (× 0.7)
-    panels.current.forEach((p, i) => {
-      if (!p) return;
-      const isOpen = i === open;
-      if (first.current) {
-        gsap.set(p, { height: isOpen ? "auto" : 0, visibility: isOpen ? "visible" : "hidden" });
-        return;
-      }
-      if (isOpen) {
-        gsap.set(p, { visibility: "visible" });
-        gsap.fromTo(p, { height: p.offsetHeight }, { height: "auto", duration: dur, ease: "expo.out" });
-      } else if (p.offsetHeight > 0) {
-        gsap.to(p, {
-          height: 0,
-          duration: dur * 0.7,
-          ease: "expo.out",
-          onComplete: () => gsap.set(p, { visibility: "hidden" }),
-        });
-      }
+    // État initial posé directement (avant l'affichage, sans GSAP)
+    if (first.current) {
+      first.current = false;
+      panels.current.forEach((p, i) => {
+        if (!p) return;
+        p.style.height = i === open ? "auto" : "0px";
+        p.style.visibility = i === open ? "visible" : "hidden";
+      });
+      return;
+    }
+    // Ensuite : GSAP chargé à la demande (déjà en cache après le démarrage du moteur d'animation)
+    let dead = false;
+    loadMotion().then(({ gsap }) => {
+      if (dead) return;
+      const dur = prefersReducedMotion() ? 0 : 0.42; // ouverture ; la fermeture est plus rapide (× 0.7)
+      panels.current.forEach((p, i) => {
+        if (!p) return;
+        if (i === open) {
+          gsap.set(p, { visibility: "visible" });
+          gsap.fromTo(p, { height: p.offsetHeight }, { height: "auto", duration: dur, ease: "expo.out" });
+        } else if (p.offsetHeight > 0) {
+          gsap.to(p, {
+            height: 0,
+            duration: dur * 0.7,
+            ease: "expo.out",
+            onComplete: () => gsap.set(p, { visibility: "hidden" }),
+          });
+        }
+      });
     });
-    first.current = false;
+    return () => {
+      dead = true;
+    };
   }, [open]);
 
   return (

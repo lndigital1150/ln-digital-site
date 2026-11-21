@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Inter, Newsreader, Caveat } from "next/font/google";
+import { Geist, Inter, Caveat } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import { site } from "@/config/site";
@@ -14,13 +14,8 @@ import JsonLd from "@/components/seo/JsonLd";
    besoin, sans bloquer le premier affichage (préchargées toutes ensemble, elles pesaient 250 Ko). */
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist", weight: ["400", "500", "600"] });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["400", "500"], preload: false });
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-newsreader",
-  weight: ["200", "300"],
-  style: ["normal", "italic"],
-  preload: false,
-});
+/* Newsreader (titres) est servie depuis public/fonts (voir globals.css) : elle est préchargée uniquement sur
+   les pages qui ont un en-tête de page (PageHeader), pas sur l'accueil qui ne l'utilise pas. */
 const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat", weight: ["400"], preload: false });
 
 export const metadata: Metadata = {
@@ -58,11 +53,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="fr-BE"
-      className={`${geist.variable} ${inter.variable} ${newsreader.variable} ${caveat.variable}`}
+      className={`${geist.variable} ${inter.variable} ${caveat.variable}`}
       suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+        {/* Connexion anticipée au CDN des photos (sans crossorigin : les images sont chargées en mode no-cors) */}
+        <link rel="preconnect" href="https://images.unsplash.com" />
         <JsonLd />
       </head>
       <body>

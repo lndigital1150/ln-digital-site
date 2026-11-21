@@ -67,3 +67,23 @@ export const scrollToTarget = (target: string | HTMLElement | number, immediate 
   if (l) l.scrollTo(y, { immediate, force: true });
   else window.scrollTo({ top: y, behavior: immediate ? "auto" : "smooth" });
 };
+
+/**
+ * Exécute `cb` après l'événement load, pendant un moment d'inactivité du navigateur
+ * (pour charger les effets non essentiels sans bloquer le démarrage). Renvoie une fonction d'annulation.
+ */
+export function afterLoadIdle(cb: () => void, timeout = 2000) {
+  let idleId = 0;
+  let timer = 0;
+  const idle = () => {
+    if (typeof window.requestIdleCallback === "function") idleId = window.requestIdleCallback(() => cb(), { timeout });
+    else timer = window.setTimeout(cb, 200);
+  };
+  if (document.readyState === "complete") idle();
+  else window.addEventListener("load", idle, { once: true });
+  return () => {
+    window.removeEventListener("load", idle);
+    if (idleId) window.cancelIdleCallback(idleId);
+    clearTimeout(timer);
+  };
+}

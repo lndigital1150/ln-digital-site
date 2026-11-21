@@ -45,12 +45,13 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [open, pathname]);
 
-  // Animation du menu (GSAP chargé après le premier affichage)
+  // Animation du menu : GSAP n'est chargé qu'à l'approche du bouton (survol, toucher, focus).
+  // S'il a déjà été chargé par le moteur d'animation, il est disponible immédiatement.
   const openRef = useRef(open);
   openRef.current = open;
   useEffect(() => {
     const menu = menuRef.current;
-    if (!menu) return;
+    if (!menu || !armed) return;
     let dead = false;
     loadMotion().then(({ gsap }) => {
       if (dead) return;
@@ -62,7 +63,7 @@ export default function Header() {
       dead = true;
       tl.current?.kill();
     };
-  }, []);
+  }, [armed]);
 
   const buildTimeline = (gsap: typeof import("gsap").gsap, menu: HTMLDivElement) => {
     const reduce = prefersReducedMotion();

@@ -13,6 +13,11 @@
 export type Photo = { src: string; alt: string };
 
 const u = (id: string) => `https://images.unsplash.com/photo-${id}`;
+/*
+ * Photos d'en-tête des pages intérieures hébergées localement (public/photos/hero, AVIF en 5 largeurs,
+ * générées par scripts/local-hero-photos.mjs) : c'est le plus grand élément affiché (LCP) de ces pages.
+ */
+const hero = (key: string) => `/photos/hero/${key}.avif`;
 
 export const photos = {
   // Accueil — composition principale
@@ -56,19 +61,19 @@ export const photos = {
   clientSme: { src: u("1556761175-b413da4baf72"), alt: "Équipe d'une PME en réunion autour d'une table" },
 
   // Tarifs
-  pricingHero: { src: u("1563013544-824ae1b704d3"), alt: "Paiement en ligne avec une carte bancaire devant un ordinateur portable" },
+  pricingHero: { src: hero("pricingHero"), alt: "Paiement en ligne avec une carte bancaire devant un ordinateur portable" },
   pricingTerminal: { src: u("1556745757-8d76bdb6984b"), alt: "Terminal de paiement sur le comptoir d'un commerce" },
 
   // À propos
-  aboutTeam: { src: u("1521737604893-d14cc237f11d"), alt: "Équipe en discussion dans un espace de travail convivial" },
-  aboutWorkshop: { src: u("1556761175-5973dc0f32e7"), alt: "Séance de travail collaborative dans un espace de coworking" },
+  aboutTeam: { src: hero("aboutTeam"), alt: "Équipe en discussion dans un espace de travail convivial" },
+  aboutWorkshop: { src: hero("aboutWorkshop"), alt: "Séance de travail collaborative dans un espace de coworking" },
   aboutOffice: { src: u("1559136555-9303baea8ebd"), alt: "Espace de travail contemporain baigné de lumière" },
   aboutMeeting: { src: u("1556761175-4b46a572b786"), alt: "Réunion de travail dans un bureau ouvert" },
   aboutPencils: { src: u("1513542789411-b6a5d4f31634"), alt: "Crayons de couleur alignés, symbole de créativité" },
-  aboutStickies: { src: u("1552664730-d307ca884978"), alt: "Équipe organisant des idées avec des notes adhésives" },
+  aboutStickies: { src: hero("aboutStickies"), alt: "Équipe organisant des idées avec des notes adhésives" },
 
   // Contact
-  contactHandshake: { src: u("1521791136064-7986c2920216"), alt: "Poignée de main entre deux professionnels" },
+  contactHandshake: { src: hero("contactHandshake"), alt: "Poignée de main entre deux professionnels" },
   contactCollab: { src: u("1557426272-fc759fdf7a8d"), alt: "Deux personnes construisant un plan de projet sur un mur de notes" },
   contactDesk: { src: u("1535957998253-26ae1ef29506"), alt: "Bureau de travail avec ordinateur portable ouvert" },
 
@@ -76,11 +81,11 @@ export const photos = {
   cta: { src: u("1557804506-669a67965ba0"), alt: "Présentation d'un projet devant une équipe attentive" },
 
   // Pages légales
-  legalSign: { src: u("1450101499163-c8848c66ca85"), alt: "Signature d'un document contractuel" },
+  legalSign: { src: hero("legalSign"), alt: "Signature d'un document contractuel" },
   legalJustice: { src: u("1589829545856-d10d557cf95f"), alt: "Statuette de la justice tenant une balance" },
-  legalBooks: { src: u("1505664194779-8beaceb93744"), alt: "Bibliothèque d'ouvrages juridiques" },
-  legalPrivacy: { src: u("1563986768494-4dee2763ff3f"), alt: "Personne utilisant un ordinateur portable et un smartphone" },
-  legalPlan: { src: u("1542621334-a254cf47733d"), alt: "Crayon posé sur un plan technique" },
+  legalBooks: { src: hero("legalBooks"), alt: "Bibliothèque d'ouvrages juridiques" },
+  legalPrivacy: { src: hero("legalPrivacy"), alt: "Personne utilisant un ordinateur portable et un smartphone" },
+  legalPlan: { src: hero("legalPlan"), alt: "Crayon posé sur un plan technique" },
 
   // Projets de démonstration
   gardenPath: { src: u("1585320806297-9794b3e4eeae"), alt: "Allée de jardin bordée de massifs fleuris" },

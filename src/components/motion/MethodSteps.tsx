@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ScrollTrigger, prefersReducedMotion } from "@/lib/motion";
+import { loadMotion, prefersReducedMotion } from "@/lib/motion-state";
 import Photo from "@/components/ui/Photo";
 import type { PhotoKey } from "@/config/images";
 
@@ -18,15 +18,24 @@ export default function MethodSteps({ steps }: { steps: Step[] }) {
     if (prefersReducedMotion()) {
       setActive(0);
     }
-    const triggers = Array.from(el.querySelectorAll<HTMLElement>(".step")).map((step, i) =>
-      ScrollTrigger.create({
-        trigger: step,
-        start: "top 60%",
-        end: "bottom 60%",
-        onToggle: (self) => self.isActive && setActive(i),
-      }),
-    );
-    return () => triggers.forEach((t) => t.kill());
+    // ScrollTrigger chargé à la demande (pas dans le JavaScript initial de la page)
+    let dead = false;
+    let triggers: Array<{ kill: () => void }> = [];
+    loadMotion().then(({ ScrollTrigger }) => {
+      if (dead) return;
+      triggers = Array.from(el.querySelectorAll<HTMLElement>(".step")).map((step, i) =>
+        ScrollTrigger.create({
+          trigger: step,
+          start: "top 60%",
+          end: "bottom 60%",
+          onToggle: (self) => self.isActive && setActive(i),
+        }),
+      );
+    });
+    return () => {
+      dead = true;
+      triggers.forEach((t) => t.kill());
+    };
   }, []);
 
   return (

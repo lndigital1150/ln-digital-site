@@ -47,7 +47,16 @@ export default function Photo({
       data-delay={delay}
     >
       <div className="photo__inner" style={parallax ? { inset: `-${parallax + 2}% 0` } : undefined}>
-        <Image src={p.src} alt={alt ?? p.alt} fill sizes={sizes} priority={priority} />
+        {/* Photo prioritaire (en-tête de page = élément LCP) : préchargée ET téléchargée en priorité haute
+            (Next 16 n'ajoute plus fetchPriority="high" avec la seule option priority) */}
+        <Image
+          src={p.src}
+          alt={alt ?? p.alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          fetchPriority={priority ? "high" : undefined}
+        />
       </div>
       {tag && <figcaption className={`photo__tag${demo ? " photo__tag--demo" : ""}`}>{tag}</figcaption>}
     </figure>
