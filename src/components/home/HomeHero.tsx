@@ -64,7 +64,11 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
 
   const legal = (
     // Pas de pied de page sur l'accueil : les informations légales restent accessibles ici
-    <nav className="hero2__legal" aria-label="Informations légales">
+    <nav className="hero2__legal" aria-label="Contact et informations légales">
+      {/* Numéro de téléphone en clair, cliquable sur mobile */}
+      <a href={`tel:${site.phone.tel}`} className="hero2__phone">
+        Tél. {site.phone.display}
+      </a>
       {legalNav.map((l) => (
         // Pas de préchargement automatique : seuls les 2 boutons principaux de l'accueil préchargent
         <Link key={l.href} href={l.href} prefetch={false}>

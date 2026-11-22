@@ -29,6 +29,12 @@ export const site = {
   /** URL publique du site (à définir quand le nom de domaine sera choisi). */
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
 
+  /** Téléphone affiché en clair (pied de page, bas de l’accueil) et cliquable (lien tel:). */
+  phone: {
+    tel: "+32492082589",
+    display: "+32 492 08 25 89",
+  },
+
   whatsapp: {
     number: "32492082589", // format international sans « + » ni espaces
     display: "+32 492 08 25 89",

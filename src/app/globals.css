@@ -920,3 +920,5 @@ body { --font-serif: var(--font-newsreader), "Cormorant Garamond", Georgia, seri
 @font-face { font-family: "Newsreader Fallback"; src: local("Times New Roman");
   ascent-override: 69.68%; descent-override: 25.12%; line-gap-override: 0%; size-adjust: 105.48%; }
 :root { --font-newsreader: "Newsreader", "Newsreader Fallback"; }
+/* Numéro de téléphone en bas de l'accueil : mis en avant parmi les liens légaux */
+.hero2__legal .hero2__phone { color: var(--blanc-lavande); font-weight: 500; font-variant-numeric: tabular-nums; }

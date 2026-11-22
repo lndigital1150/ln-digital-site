@@ -46,6 +46,9 @@ export default function Footer() {
           <h2>Contact</h2>
           <ul>
             <li>
+              <a href={`tel:${site.phone.tel}`}>Téléphone · {site.phone.display}</a>
+            </li>
+            <li>
               <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer">
                 WhatsApp · {site.whatsapp.display}
               </a>
