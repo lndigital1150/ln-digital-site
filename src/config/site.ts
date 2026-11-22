@@ -26,8 +26,12 @@ export const site = {
   zoneLong: "Bruxelles et Wallonie, Belgique",
   locale: "fr_BE",
 
-  /** URL publique du site (à définir quand le nom de domaine sera choisi). */
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  /**
+   * Adresse publique du site : utilisée pour les balises canonical et og:url, le sitemap, robots.txt
+   * et les données structurées. Le jour où un nom de domaine est choisi, remplacez-la ici
+   * (ou définissez NEXT_PUBLIC_SITE_URL dans Cloudflare, qui a la priorité).
+   */
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://ln-digital-site.lndigital1150.workers.dev",
 
   /** Téléphone affiché en clair (pied de page, bas de l’accueil) et cliquable (lien tel:). */
   phone: {
