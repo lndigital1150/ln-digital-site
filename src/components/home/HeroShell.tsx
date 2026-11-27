@@ -11,8 +11,7 @@ import {
   setMotionPaused,
   onMotionPause,
 } from "@/lib/motion-state";
-import imageLoader from "@/lib/image-loader";
-import { photos, type PhotoKey } from "@/config/images";
+import { photoFile, photoSrcSet, type PhotoKey } from "@/config/images";
 
 export type ReelItem = {
   href: string;
@@ -32,22 +31,17 @@ const PlayIcon = () => (
   </svg>
 );
 
-/** URL et srcset d'une photo Unsplash (même chargeur que next/image). */
-const srcOf = (key: PhotoKey, width: number, quality: number) => imageLoader({ src: photos[key].src, width, quality });
-const srcSetOf = (key: PhotoKey, widths: number[], quality: number) =>
-  widths.map((w) => `${srcOf(key, w, quality)} ${w}w`).join(", ");
-
 /**
- * Les photos de l'accueil (fond à 22 % d'opacité, vignettes du bandeau) sont rendues SANS adresse
- * (data-src) puis reçoivent leur source directement dans le DOM après le chargement de la page :
- * elles ne ralentissent pas le premier affichage, et leur arrivée ne provoque aucun nouveau rendu React.
+ * Photos de fond de l'accueil (22 % d'opacité) : rendues SANS adresse (data-srcset / data-src), puis leur
+ * source est posée directement dans le DOM après le chargement de la page. Elles ne ralentissent pas le
+ * premier affichage et leur arrivée ne provoque aucun nouveau rendu React. Fichiers locaux AVIF / WebP.
  */
 function loadImg(img: HTMLImageElement | null | undefined) {
   if (!img || img.getAttribute("src") || !img.dataset.src) return;
-  img.addEventListener("load", () => img.classList.add("is-loaded"), {
-    once: true,
+  img.addEventListener("load", () => img.classList.add("is-loaded"), { once: true });
+  img.parentElement?.querySelectorAll<HTMLSourceElement>("source[data-srcset]").forEach((source) => {
+    source.srcset = source.dataset.srcset!;
   });
-  if (img.dataset.srcset) img.srcset = img.dataset.srcset;
   img.src = img.dataset.src;
 }
 
@@ -213,13 +207,11 @@ export default function HeroShell({
           {items.map((it, i) => (
             <div key={it.href} className={`hero2__slide${i === active ? " is-active" : ""}`}>
               {/* Photo à 22 % d'opacité, assombrie et désaturée : une qualité basse suffit et allège fortement la page */}
-              <img
-                alt=""
-                decoding="async"
-                sizes="100vw"
-                data-src={srcOf(it.image, 1080, 25)}
-                data-srcset={srcSetOf(it.image, [640, 750, 828, 1080, 1200, 1920], 25)}
-              />
+              <picture>
+                <source type="image/avif" sizes="100vw" data-srcset={photoSrcSet(it.image, "avif")} />
+                <source type="image/webp" sizes="100vw" data-srcset={photoSrcSet(it.image, "webp")} />
+                <img alt="" decoding="async" data-src={photoFile(it.image, 1080, "webp")} />
+              </picture>
             </div>
           ))}
         </div>
@@ -292,14 +284,6 @@ function HeroReel({
     if (!a) return;
     if (state.current.paused || state.current.focused) a.pause();
     else a.play();
-  }, []);
-
-  // Vignettes : source posée après le chargement de la page, une fois le bandeau hydraté (frontière Suspense)
-  useEffect(() => {
-    const go = () => track.current?.querySelectorAll<HTMLImageElement>(".reel2__thumb img").forEach(loadImg);
-    if (document.readyState === "complete") go();
-    else window.addEventListener("load", go, { once: true });
-    return () => window.removeEventListener("load", go);
   }, []);
 
   useEffect(() => {
@@ -379,15 +363,26 @@ function HeroReel({
           aria-hidden={duplicate || undefined}
         >
           <span className="reel2__thumb">
-            {/* Vignette affichée en 52 × 30 px : taille exacte (1x / 2x), format AVIF/WebP via le chargeur */}
-            <img
-              alt=""
-              width={104}
-              height={60}
-              decoding="async"
-              data-src={srcOf(it.image, 104, 50)}
-              data-srcset={`${srcOf(it.image, 52, 50)} 1x, ${srcOf(it.image, 104, 50)} 2x`}
-            />
+            {/* Vignette affichée en 52 px de large : fichiers locaux à la taille exacte (1x = 52 px, 2x = 104 px),
+                AVIF sinon WebP, chargement différé natif */}
+            <picture>
+              <source
+                type="image/avif"
+                srcSet={`${photoFile(it.image, 52, "avif")} 1x, ${photoFile(it.image, 104, "avif")} 2x`}
+              />
+              <source
+                type="image/webp"
+                srcSet={`${photoFile(it.image, 52, "webp")} 1x, ${photoFile(it.image, 104, "webp")} 2x`}
+              />
+              <img
+                src={photoFile(it.image, 104, "webp")}
+                alt=""
+                width={104}
+                height={60}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </span>
           <span className="reel2__text">
             <span className="reel2__title">{it.title}</span>

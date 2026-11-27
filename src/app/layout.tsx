@@ -58,8 +58,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
-        {/* Connexion anticipée au CDN des photos (sans crossorigin : les images sont chargées en mode no-cors) */}
-        <link rel="preconnect" href="https://images.unsplash.com" />
         <JsonLd />
       </head>
       <body>

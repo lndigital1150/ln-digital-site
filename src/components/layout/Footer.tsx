@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="container footer__top">
         <div className="footer__brand">
           {/* Emplacement du logo (version inversée pour fond sombre) */}
-          <img src="/brand/ln-digital-horizontal-inverse.svg" alt={site.name} width={180} height={38} />
+          <img src="/brand/ln-digital-horizontal-inverse.svg" alt={site.name} width={180} height={38} loading="lazy" />
           <p className="muted" style={{ maxWidth: "34ch" }}>
             {site.baseline}
           </p>
@@ -81,7 +81,7 @@ export default function Footer() {
       </div>
 
       <div className="footer__wordmark" data-reveal aria-hidden="true">
-        <img src="/brand/ln-digital-nom-seul-inverse.svg" alt="" width={1400} height={300} />
+        <img src="/brand/ln-digital-nom-seul-inverse.svg" alt="" width={1400} height={300} loading="lazy" />
       </div>
 
       <div className="container">

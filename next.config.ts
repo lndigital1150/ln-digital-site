@@ -4,11 +4,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // experimental.inlineCss a été testé : Next intègre alors le CSS DEUX fois dans le HTML (balise <style>
   // + données d'hydratation), soit +25 Ko gzip par page ; le premier affichage était plus lent. Non retenu.
-  images: {
-    // Les photos Unsplash sont servies par leur CDN (WebP/AVIF automatiques, redimensionnées).
-    loader: "custom",
-    loaderFile: "./src/lib/image-loader.ts",
-  },
+  // Photos : fichiers locaux pré-générés (public/photos, AVIF + WebP, « npm run photos ») affichés par le
+  // composant Picture — next/image et son chargeur ne sont plus utilisés.
   async headers() {
     return [
       {

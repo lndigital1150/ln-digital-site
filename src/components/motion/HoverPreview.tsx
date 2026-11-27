@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
+import Picture from "@/components/ui/Picture";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { loadMotion, prefersReducedMotion } from "@/lib/motion-state";
-import { photos, type PhotoKey } from "@/config/images";
+import type { PhotoKey } from "@/config/images";
 
 /**
  * Liste avec aperçu photo qui suit le pointeur au survol des lignes.
@@ -95,7 +95,7 @@ export default function HoverPreview({
             key={k + i}
             className={`photo${i === active ? " is-active" : ""}`}
           >
-            <Image src={photos[k].src} alt="" fill sizes="320px" />
+            <Picture name={k} alt="" sizes="320px" />
           </div>
         ))}
       </div>

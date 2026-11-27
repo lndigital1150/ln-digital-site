@@ -56,7 +56,9 @@ export function CookieBanner() {
       <p>
         <strong style={{ color: "var(--blanc-lavande)" }}>Cookies.</strong> Ce site utilise uniquement des éléments
         strictement nécessaires à son fonctionnement. Aucun traceur publicitaire ou de mesure d&apos;audience n&apos;est
-        activé sans votre accord. <Link href="/cookies">En savoir plus</Link>
+        activé sans votre accord. <Link href="/cookies" prefetch={false}>
+          En savoir plus
+        </Link>
       </p>
       <div className="btn-row">
         <button type="button" className="btn btn--ghost btn--small" onClick={() => save(false)}>

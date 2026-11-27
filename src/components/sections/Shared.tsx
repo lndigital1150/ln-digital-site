@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { preload } from "react-dom";
 import Photo from "@/components/ui/Photo";
 import Button from "@/components/ui/Button";
 import Marquee from "@/components/ui/Marquee";
@@ -53,12 +52,14 @@ export function PageHero({
   crumbs: { name: string; path: string }[];
   children?: ReactNode;
 }) {
-  // Police du titre préchargée sur les pages intérieures : elle arrive avant le premier affichage, le titre
-  // ne change pas de largeur ensuite (pas de décalage de mise en page). L'accueil, lui, ne la charge pas.
-  preload("/fonts/newsreader-latin-normal.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
-  preload("/fonts/newsreader-latin-italic.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   return (
     <section className="page-hero theme-dark" data-chapter={label}>
+      {/* Police du titre préchargée sur les pages intérieures : elle arrive avant le premier affichage, le titre
+          ne change pas de largeur ensuite (pas de décalage). Balises <link> écrites dans la page (et non
+          ReactDOM.preload) : elles ne s'appliquent qu'à la page affichée, pas aux pages préchargées en
+          arrière-plan par Next.js. L'accueil, lui, ne charge pas cette police. */}
+      <link rel="preload" href="/fonts/newsreader-latin-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      <link rel="preload" href="/fonts/newsreader-latin-italic.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       <BreadcrumbJsonLd items={crumbs} />
       <div className="container">
         <div className="page-hero__meta">

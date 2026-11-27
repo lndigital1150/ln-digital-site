@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import Picture from "@/components/ui/Picture";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, Suspense } from "react";
 import { nav, site } from "@/config/site";
-import { photos, type PhotoKey } from "@/config/images";
+import type { PhotoKey } from "@/config/images";
 import { getLenis, loadMotion, prefersReducedMotion } from "@/lib/motion-state";
 import { whatsappUrl } from "@/lib/links";
 import Button from "@/components/ui/Button";
@@ -183,13 +183,16 @@ export default function Header() {
             className="header__logo"
             aria-label={`${site.name} — accueil`}
           >
-            {/* Emplacement du logo : fichier public/brand/ln-digital-horizontal-inverse.svg */}
+            {/* Emplacement du logo : fichier public/brand/ln-digital-horizontal-inverse.svg.
+                Une seule des deux versions est affichée selon la page : chargement différé natif, pour que
+                seule la version visible soit téléchargée (pas de préchargement inutile ni d'avertissement). */}
             <img
               className="header__full"
               src="/brand/ln-digital-horizontal-inverse.svg"
               alt={site.name}
               width={123}
               height={26}
+              loading="lazy"
             />
             <img
               className="header__mono"
@@ -197,6 +200,7 @@ export default function Header() {
               alt=""
               width={30}
               height={30}
+              loading="lazy"
             />
           </Link>
 
@@ -297,7 +301,7 @@ export default function Header() {
                   key={k}
                   className={`photo${i === active ? " is-active" : ""}`}
                 >
-                  <Image src={photos[k].src} alt="" fill sizes="40vw" />
+                  <Picture name={k} alt="" sizes="40vw" />
                 </div>
               ))}
             </div>

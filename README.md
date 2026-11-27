@@ -51,14 +51,26 @@ Dans `src/config/pricing.ts` :
 Les prix ne mentionnent pas la TVA : le texte `vatNote` est à adapter selon votre statut.
 
 ### Photos
-Les photos viennent d'**Unsplash** (licence Unsplash : usage commercial autorisé, attribution non obligatoire).
-Elles sont servies par le CDN d'Unsplash en WebP/AVIF, à la bonne taille selon l'écran.
+Les photos viennent d'**Unsplash** (licence Unsplash : usage commercial autorisé, attribution non obligatoire),
+mais elles sont **hébergées sur le site** (`public/photos`) : aucun appel à un service externe à l'affichage.
+Chaque photo existe en **AVIF** (format principal) et **WebP** (repli, ex. Safari sur macOS 12), en 9 largeurs
+(52 à 1920 px), plus une image de partage `-og.jpg` en 1200 × 630 pour les réseaux sociaux.
 
-- Remplacer une photo : changez l'identifiant (`u("…")`) dans `src/config/images.ts`.
-  L'identifiant est la partie après `photo-` dans une URL `images.unsplash.com/photo-…`.
-- Utiliser vos propres photos : placez le fichier dans `public/photos/` (idéalement en `.webp`)
-  et remplacez `src: u("…")` par `src: "/photos/mon-image.webp"`.
+- Ajouter / remplacer une photo : indiquez son identifiant Unsplash dans `src/config/images.ts`
+  (la partie après `photo-` dans une URL `images.unsplash.com/photo-…`), puis lancez `npm run photos`
+  (génère uniquement les fichiers manquants ; `npm run photos -- --force` régénère tout).
+- Affichage : composant `src/components/ui/Picture.tsx` (`<picture>` AVIF + WebP, chargement différé natif).
 - Pensez à garder un texte alternatif (`alt`) descriptif.
+
+### Styles (CSS)
+- `src/app/globals.css` : styles communs et ceux de l'accueil (seul fichier chargé par l'accueil).
+- `src/app/(pages)/pages.css` : styles des pages intérieures, chargés par le groupe de routes `(pages)`
+  (les parenthèses n'apparaissent pas dans les URL). Une règle propre aux pages intérieures va dans ce fichier.
+
+### JavaScript « legacy » (audit Lighthouse)
+Lighthouse signale ~14 Ko de polyfills (`Array.prototype.at`, `flat`, `Object.hasOwn`…). Ils font partie du
+code client de Next.js lui-même (16.4) et ne dépendent ni du `browserslist` (déjà moderne) ni d'une dépendance :
+aucune option ne permet de les retirer dans cette version. Impact sur le score : nul (simple information).
 
 ### Coordonnées
 `src/config/site.ts` → `whatsapp` (numéro au format international sans « + »), `email`, `legal`.

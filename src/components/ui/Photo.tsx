@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Picture from "./Picture";
 import { photos, type PhotoKey } from "@/config/images";
 
 type Props = {
@@ -47,16 +47,8 @@ export default function Photo({
       data-delay={delay}
     >
       <div className="photo__inner" style={parallax ? { inset: `-${parallax + 2}% 0` } : undefined}>
-        {/* Photo prioritaire (en-tête de page = élément LCP) : préchargée ET téléchargée en priorité haute
-            (Next 16 n'ajoute plus fetchPriority="high" avec la seule option priority) */}
-        <Image
-          src={p.src}
-          alt={alt ?? p.alt}
-          fill
-          sizes={sizes}
-          priority={priority}
-          fetchPriority={priority ? "high" : undefined}
-        />
+        {/* Photo locale AVIF/WebP ; prioritaire (préchargée, priorité haute) pour l'en-tête de page (LCP) */}
+        <Picture name={name} alt={alt ?? p.alt} sizes={sizes} priority={priority} />
       </div>
       {tag && <figcaption className={`photo__tag${demo ? " photo__tag--demo" : ""}`}>{tag}</figcaption>}
     </figure>

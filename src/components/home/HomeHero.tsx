@@ -52,10 +52,12 @@ export default function HomeHero({ items }: { items: ReelItem[] }) {
         LN Digital — votre croissance mérite une stratégie digitale.
       </h1>
       <div className="hero2__ctas">
-        <Link href="/contact#devis" className="hero2__cta hero2__cta--accent" data-magnetic="0.3">
+        {/* Pas de préchargement en arrière-plan : l'accueil ne télécharge aucune autre page au chargement
+            (le préchargement appliquait aussi à l'accueil les préchargements de police et de photo de ces pages) */}
+        <Link href="/contact#devis" className="hero2__cta hero2__cta--accent" data-magnetic="0.3" prefetch={false}>
           Demander un devis <ArrowUpRight className="hero2__cta-icon" />
         </Link>
-        <Link href="/services" className="hero2__cta" data-magnetic="0.3">
+        <Link href="/services" className="hero2__cta" data-magnetic="0.3" prefetch={false}>
           Découvrir nos services <ArrowUpRight className="hero2__cta-icon" />
         </Link>
       </div>

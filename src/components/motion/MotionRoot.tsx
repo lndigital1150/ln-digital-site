@@ -47,9 +47,9 @@ export default function MotionRoot() {
   const isPop = useRef(false);
   const firstRun = useRef(true);
 
-  /* Lenis */
+  /* Lenis (défilement fluide à la molette) : inutile sur écran tactile, où il ne lisse pas le défilement */
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (prefersReducedMotion() || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1, touchMultiplier: 1.4 });
     setLenis(lenis);
     (window as unknown as { __lenis?: Lenis }).__lenis = lenis; // pratique pour le débogage
