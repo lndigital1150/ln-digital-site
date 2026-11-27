@@ -9,9 +9,9 @@ import { pageMeta } from "@/lib/seo";
 import { whatsappUrl } from "@/lib/links";
 
 export const metadata: Metadata = pageMeta({
-  title: "Tarifs — sites web, Google Business Profile, identité de marque",
+  title: "Tarifs — sites web, identité visuelle, Google Business Profile",
   description:
-    "Tarifs indicatifs de LN Digital : Google Business Profile 149 €, site vitrine dès 590 €, identité de marque dès 250 €, contenu visuel dès 199 €/mois. Publicité, SEO et e-mail marketing sur devis.",
+    "Tarifs indicatifs de LN Digital : site vitrine dès 590 €, identité visuelle dès 250 €, fiche Google Business Profile 149 €. Projets sur mesure sur devis.",
   path: "/tarifs",
   image: photos.pricingHero.src,
 });
@@ -30,7 +30,11 @@ export default function TarifsPage() {
         ]}
         title={
           <>
-            Des tarifs <span className="nowrap"><em>transparents</em>,</span> sans surprise.
+            Des tarifs{" "}
+            <span className="nowrap">
+              <em>transparents</em>,
+            </span>{" "}
+            sans surprise.
           </>
         }
         intro="Certaines prestations ont un prix fixe ou un prix de départ. Les projets plus spécifiques font l'objet d'un devis adapté à vos besoins."
@@ -67,25 +71,28 @@ export default function TarifsPage() {
         </div>
       </section>
 
-      <section className="section theme-lavande" data-chapter="Sur devis">
-        <div className="container">
-          <SectionHead
-            title={
-              <>
-                Pour les projets <em>sur mesure.</em>
-              </>
-            }
-            intro="La publicité digitale, le SEO et l'e-mail marketing dépendent fortement de vos objectifs, de votre marché et de votre point de départ : nous établissons un devis après un premier échange."
-          />
-          <div className="price-grid price-grid--3">
-            {quote.map((o) => (
-              <div key={o.id} data-reveal>
-                <PriceCard offer={o} detailed />
-              </div>
-            ))}
+      {/* Offres sur devis uniquement (aucune actuellement : la section ne s'affiche que s'il y en a) */}
+      {quote.length > 0 && (
+        <section className="section theme-lavande" data-chapter="Sur devis">
+          <div className="container">
+            <SectionHead
+              title={
+                <>
+                  Pour les projets <em>sur mesure.</em>
+                </>
+              }
+              intro="Ces prestations dépendent fortement de vos objectifs et de votre point de départ : nous établissons un devis après un premier échange."
+            />
+            <div className="price-grid price-grid--3">
+              {quote.map((o) => (
+                <div key={o.id} data-reveal>
+                  <PriceCard offer={o} detailed />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="section theme-dark" data-chapter="Comment commander">
         <div className="container grid-2">
@@ -95,11 +102,10 @@ export default function TarifsPage() {
             </h2>
             <div className="prose" data-reveal>
               <p>
-                <strong style={{ color: "var(--blanc-lavande)" }}>Achat direct —</strong> pour les offres standard
-                (prix fixe ou formule de départ) : vous choisissez la prestation, renseignez vos informations,
-                vérifiez le récapitulatif et les conditions, puis êtes redirigé vers un paiement sécurisé chez un
-                prestataire reconnu. La commande n&apos;est confirmée qu&apos;après confirmation effective du
-                paiement.
+                <strong style={{ color: "var(--blanc-lavande)" }}>Achat direct —</strong> pour les offres standard (prix
+                fixe ou formule de départ) : vous choisissez la prestation, renseignez vos informations, vérifiez le
+                récapitulatif et les conditions, puis êtes redirigé vers un paiement sécurisé chez un prestataire
+                reconnu. La commande n&apos;est confirmée qu&apos;après confirmation effective du paiement.
               </p>
               <p>
                 <strong style={{ color: "var(--blanc-lavande)" }}>Demande de devis —</strong> pour les projets

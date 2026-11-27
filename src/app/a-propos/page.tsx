@@ -58,7 +58,7 @@ const steps: { title: string; text: string; image: PhotoKey }[] = [
   },
   {
     title: "Développer",
-    text: "Créer et mettre en œuvre les éléments nécessaires : site, fiche, visuels, campagnes ou contenus.",
+    text: "Créer et mettre en œuvre les éléments nécessaires : site web, identité visuelle ou fiche Google.",
     image: "stepBuild",
   },
   {

@@ -28,7 +28,7 @@ npm run start      # lance la version de production
 | Je veux modifier…                         | Fichier                                    |
 |-------------------------------------------|--------------------------------------------|
 | Slogan, WhatsApp, e-mail, zone, infos légales | `src/config/site.ts`                    |
-| Les 7 services (textes, prestations, photos)  | `src/config/services.ts`                |
+| Les 3 services (textes, prestations, photos)  | `src/config/services.ts`                |
 | Les tarifs, offres, mode d'achat              | `src/config/pricing.ts`                 |
 | Les projets de démonstration                  | `src/config/projects.ts`                |
 | Les questions fréquentes                      | `src/config/faq.ts`                     |

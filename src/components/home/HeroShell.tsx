@@ -14,7 +14,12 @@ import {
 import imageLoader from "@/lib/image-loader";
 import { photos, type PhotoKey } from "@/config/images";
 
-export type ReelItem = { href: string; title: string; sub: string; image: PhotoKey };
+export type ReelItem = {
+  href: string;
+  title: string;
+  sub: string;
+  image: PhotoKey;
+};
 
 const PauseIcon = () => (
   <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
@@ -28,8 +33,7 @@ const PlayIcon = () => (
 );
 
 /** URL et srcset d'une photo Unsplash (même chargeur que next/image). */
-const srcOf = (key: PhotoKey, width: number, quality: number) =>
-  imageLoader({ src: photos[key].src, width, quality });
+const srcOf = (key: PhotoKey, width: number, quality: number) => imageLoader({ src: photos[key].src, width, quality });
 const srcSetOf = (key: PhotoKey, widths: number[], quality: number) =>
   widths.map((w) => `${srcOf(key, w, quality)} ${w}w`).join(", ");
 
@@ -40,7 +44,9 @@ const srcSetOf = (key: PhotoKey, widths: number[], quality: number) =>
  */
 function loadImg(img: HTMLImageElement | null | undefined) {
   if (!img || img.getAttribute("src") || !img.dataset.src) return;
-  img.addEventListener("load", () => img.classList.add("is-loaded"), { once: true });
+  img.addEventListener("load", () => img.classList.add("is-loaded"), {
+    once: true,
+  });
   if (img.dataset.srcset) img.srcset = img.dataset.srcset;
   img.src = img.dataset.src;
 }
@@ -155,8 +161,14 @@ export default function HeroShell({
             const wm = el.querySelector(".hero2__tilt")!;
             const bg = el.querySelector(".hero2__parallax")!;
             gsap.set(wm, { transformPerspective: 1200 });
-            const rx = gsap.quickTo(wm, "rotationX", { duration: 1, ease: "power3" });
-            const ry = gsap.quickTo(wm, "rotationY", { duration: 1, ease: "power3" });
+            const rx = gsap.quickTo(wm, "rotationX", {
+              duration: 1,
+              ease: "power3",
+            });
+            const ry = gsap.quickTo(wm, "rotationY", {
+              duration: 1,
+              ease: "power3",
+            });
             const bx = gsap.quickTo(bg, "x", { duration: 1.4, ease: "power3" });
             const by = gsap.quickTo(bg, "y", { duration: 1.4, ease: "power3" });
             const move = (e: PointerEvent) => {
@@ -344,36 +356,46 @@ function HeroReel({
   // Bouton pause du héros ou du pied de page
   useEffect(sync, [paused, sync]);
 
+  // Peu d'éléments (3 services + 3 démos) : la liste est répétée pour qu'une copie du bandeau soit toujours
+  // plus large que l'écran, sinon un vide apparaîtrait à la jonction de la boucle sur grand écran.
+  const repeat = Math.max(1, Math.ceil(12 / items.length));
+  const loop = Array.from({ length: repeat }, () => items).flat();
+
   const row = (copy: boolean) =>
-    items.map((it, i) => (
-      <Link
-        key={`${copy ? "c" : "o"}-${it.href}`}
-        href={it.href}
-        // Pas de préchargement automatique : seuls les 2 boutons principaux de l'accueil préchargent
-        prefetch={false}
-        className={`reel2__item${i === active ? " is-active" : ""}`}
-        onPointerEnter={() => onOver(i)}
-        onFocus={() => onOver(i)}
-        tabIndex={copy ? -1 : undefined}
-        aria-hidden={copy || undefined}
-      >
-        <span className="reel2__thumb">
-          {/* Vignette affichée en 52 × 30 px : taille exacte (1x / 2x), format AVIF/WebP via le chargeur */}
-          <img
-            alt=""
-            width={104}
-            height={60}
-            decoding="async"
-            data-src={srcOf(it.image, 104, 50)}
-            data-srcset={`${srcOf(it.image, 52, 50)} 1x, ${srcOf(it.image, 104, 50)} 2x`}
-          />
-        </span>
-        <span className="reel2__text">
-          <span className="reel2__title">{it.title}</span>
-          <span className="reel2__sub">{it.sub}</span>
-        </span>
-      </Link>
-    ));
+    loop.map((it, j) => {
+      const i = j % items.length;
+      // Seule la première occurrence de chaque lien est atteignable au clavier et lue par les lecteurs d'écran
+      const duplicate = copy || j >= items.length;
+      return (
+        <Link
+          key={`${copy ? "c" : "o"}-${j}`}
+          href={it.href}
+          // Pas de préchargement automatique : seuls les 2 boutons principaux de l'accueil préchargent
+          prefetch={false}
+          className={`reel2__item${i === active ? " is-active" : ""}`}
+          onPointerEnter={() => onOver(i)}
+          onFocus={() => onOver(i)}
+          tabIndex={duplicate ? -1 : undefined}
+          aria-hidden={duplicate || undefined}
+        >
+          <span className="reel2__thumb">
+            {/* Vignette affichée en 52 × 30 px : taille exacte (1x / 2x), format AVIF/WebP via le chargeur */}
+            <img
+              alt=""
+              width={104}
+              height={60}
+              decoding="async"
+              data-src={srcOf(it.image, 104, 50)}
+              data-srcset={`${srcOf(it.image, 52, 50)} 1x, ${srcOf(it.image, 104, 50)} 2x`}
+            />
+          </span>
+          <span className="reel2__text">
+            <span className="reel2__title">{it.title}</span>
+            <span className="reel2__sub">{it.sub}</span>
+          </span>
+        </Link>
+      );
+    });
 
   return (
     <nav className="reel2" aria-label="Nos services">

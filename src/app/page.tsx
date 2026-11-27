@@ -9,22 +9,18 @@ export const metadata: Metadata = {
   ...pageMeta({
     title: "Agence de marketing digital en Belgique — Bruxelles et Wallonie",
     description:
-      "LN Digital accompagne commerces, artisans, indépendants et PME à Bruxelles et en Wallonie : création de sites web, Google Business Profile, publicité digitale, identité de marque et SEO.",
+      "LN Digital accompagne commerces, artisans, indépendants et PME à Bruxelles et en Wallonie : création de sites web, identité visuelle (logo) et fiche Google Business Profile.",
     path: "/",
     image: photos.heroMain.src,
   }),
   title: { absolute: "LN Digital — Agence de marketing digital en Belgique (Bruxelles · Wallonie)" },
 };
 
-/* Bandeau du héros : les 7 services puis les projets de démonstration (signalés comme fictifs). */
+/* Bandeau du héros : les 3 services puis les projets de démonstration (signalés comme fictifs). */
 const serviceTaglines: Record<string, string> = {
   "creation-sites-web": "Sur tous les écrans",
-  "google-business-profile": "Visibilité locale",
-  "publicite-digitale": "Campagnes ciblées",
   "identite-de-marque": "Logo & univers",
-  "e-mail-marketing": "Newsletters",
-  "creation-contenu-visuel": "Réseaux sociaux",
-  "referencement-naturel-seo": "Moteurs de recherche",
+  "google-business-profile": "Visibilité locale",
 };
 const reelItems = [
   ...services.map((s) => ({

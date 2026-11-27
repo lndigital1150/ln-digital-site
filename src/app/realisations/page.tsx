@@ -8,7 +8,7 @@ import { pageMeta } from "@/lib/seo";
 export const metadata: Metadata = pageMeta({
   title: "Réalisations — projets de démonstration",
   description:
-    "Projets de démonstration fictifs de LN Digital : site vitrine pour une entreprise de jardinage, identité visuelle de restaurant, campagne digitale pour un commerce local, contenus visuels.",
+    "Projets de démonstration fictifs de LN Digital : site vitrine pour une entreprise de jardinage, identité visuelle de restaurant, fiche Google Business Profile pour un commerce local.",
   path: "/realisations",
   image: photos.gardenPath.src,
 });
@@ -28,7 +28,7 @@ export default function RealisationsPage() {
             Des projets pour <em>imaginer</em> le vôtre.
           </>
         }
-        intro="Ces projets de démonstration illustrent la manière dont LN Digital peut aborder un site, une identité ou une campagne. Ils sont fictifs et ne représentent aucun client réel."
+        intro="Ces projets de démonstration illustrent la manière dont LN Digital peut aborder un site, une identité visuelle ou une fiche Google. Ils sont fictifs et ne représentent aucun client réel."
         hand="démonstrations"
       >
         <DemoNotice />

@@ -78,8 +78,7 @@ export default function CGV() {
           body: (
             <p>
               Les prix affichés sont indicatifs et exprimés en euros. Le régime de TVA applicable (prix HTVA ou TVAC)
-              est : <V value={null} />. Le budget publicitaire versé aux plateformes est distinct des honoraires du
-              prestataire, sauf mention contraire dans une offre.
+              est : <V value={null} />.
             </p>
           ),
         },

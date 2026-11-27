@@ -19,11 +19,7 @@ export const faq: Faq[] = [
   },
   {
     q: "Pouvez-vous garantir la première place sur Google ?",
-    a: "Non. Le référencement dépend de nombreux facteurs, dont certains ne dépendent pas de nous : aucun classement précis ne peut être garanti.",
-  },
-  {
-    q: "Le budget publicitaire est-il inclus dans les honoraires ?",
-    a: "Non. Le budget versé aux plateformes publicitaires est distinct des honoraires de l'agence, sauf indication contraire dans une offre.",
+    a: "Non. La visibilité sur Google dépend de nombreux facteurs, dont certains ne dépendent pas de nous : aucun classement précis ne peut être garanti.",
   },
   {
     q: "Proposez-vous des prestations ponctuelles ?",

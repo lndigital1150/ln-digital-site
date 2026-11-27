@@ -14,7 +14,7 @@ import { quoteUrl } from "@/lib/links";
 export const metadata: Metadata = pageMeta({
   title: "Services de marketing digital à Bruxelles et en Wallonie",
   description:
-    "Création de sites web pour PME et indépendants, Google Business Profile, publicité digitale, identité de marque, e-mail marketing, contenu visuel et référencement naturel SEO.",
+    "Création de sites web pour PME et indépendants, identité visuelle (logo, couleurs, typographies) et optimisation de votre fiche Google Business Profile, à Bruxelles et en Wallonie.",
   path: "/services",
   image: photos.web.src,
 });
@@ -32,10 +32,10 @@ export default function ServicesPage() {
         ]}
         title={
           <>
-            Sept services pour <em>grandir</em> en ligne.
+            Trois services pour <em>grandir</em> en ligne.
           </>
         }
-        intro="Site web, visibilité locale, publicité, identité, e-mail, visuels et SEO : chaque service peut être réalisé seul ou combiné aux autres selon vos objectifs."
+        intro="Un site web, une identité visuelle et une fiche Google soignée : chaque service peut être réalisé seul ou combiné aux autres selon vos objectifs."
         hand="à la carte ou combinés"
       />
 

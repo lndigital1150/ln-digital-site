@@ -20,7 +20,7 @@ export const site = {
   baseline: "Des solutions digitales pour accompagner la croissance de votre entreprise.",
 
   description:
-    "LN Digital, agence de marketing digital en Belgique : création de sites web, Google Business Profile, publicité digitale, identité de marque, contenu visuel, SEO et e-mail marketing à Bruxelles et en Wallonie.",
+    "LN Digital, agence de marketing digital en Belgique : création de sites web, identité visuelle et Google Business Profile à Bruxelles et en Wallonie.",
 
   zone: "Bruxelles · Wallonie",
   zoneLong: "Bruxelles et Wallonie, Belgique",
@@ -31,7 +31,7 @@ export const site = {
    * et les données structurées. Le jour où un nom de domaine est choisi, remplacez-la ici
    * (ou définissez NEXT_PUBLIC_SITE_URL dans Cloudflare, qui a la priorité).
    */
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://ln-digital-site.lndigital1150.workers.dev",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://lndigital.be",
 
   /** Téléphone affiché en clair (pied de page, bas de l’accueil) et cliquable (lien tel:). */
   phone: {
