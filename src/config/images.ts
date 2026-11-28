@@ -25,12 +25,12 @@ const registry = {
   heroMain: p("1522202176988-66273c2fd55f", "Trois personnes travaillent ensemble autour d'un ordinateur portable"),
 
   // Services
-  web: p("1547658719-da2b51169166", "Écrans d'ordinateur et de smartphone affichant la conception d'un site web"),
-  webAlt: p("1498050108023-c5249f4df085", "Ordinateur portable affichant du code sur un bureau lumineux"),
-  gbp: p("1528698827591-e19ccd7bc23d", "Devanture d'un commerce de quartier en soirée"),
-  gbpAlt: p("1559925393-8be0ec4767c8", "Terrasse d'un café dans une rue commerçante"),
-  brand: p("1561070791-2526d30994b5", "Nuanciers de couleurs et esquisses de logos sur un bureau de graphiste"),
-  brandAlt: p("1522542550221-31fd19575a2d", "Planches de maquettes graphiques et de wireframes imprimées"),
+  web: p("1547658719-da2b51169166", "Écrans d'ordinateur et de smartphone affichant la maquette d'un site web adapté au mobile"),
+  webAlt: p("1498050108023-c5249f4df085", "Développement d'un site internet : ordinateur portable affichant du code"),
+  gbp: p("1528698827591-e19ccd7bc23d", "Devanture éclairée d'un commerce de proximité en soirée"),
+  gbpAlt: p("1559925393-8be0ec4767c8", "Terrasse d'un café local dans une rue commerçante"),
+  brand: p("1561070791-2526d30994b5", "Nuanciers de couleurs et esquisses de logo pour une identité visuelle d'entreprise"),
+  brandAlt: p("1522542550221-31fd19575a2d", "Planches de maquettes graphiques imprimées sur le bureau d'un graphiste"),
 
   // Pourquoi / méthode
   why: p("1600880292203-757bb62b4baf", "Deux collègues se tapent dans la main dans un bureau lumineux"),

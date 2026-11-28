@@ -43,7 +43,7 @@ export const site = {
     number: "32492082589", // format international sans « + » ni espaces
     display: "+32 492 08 25 89",
     message:
-      "Bonjour LN Digital, je souhaiterais obtenir des informations concernant vos services de marketing digital.",
+      "Bonjour LN Digital, je souhaiterais obtenir des informations concernant vos services.",
   },
 
   /** Réseaux sociaux */

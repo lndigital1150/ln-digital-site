@@ -28,7 +28,7 @@ export type Service = {
   audience: string;
   /** Projet de démonstration (fictif) qui illustre ce service. */
   projectSlug: string;
-  /** Questions fréquentes propres à ce service, tirées uniquement des prestations décrites ci-dessus. */
+  /** Questions fréquentes propres à ce service (distinctes de celles de la page Contact). [texte](/lien) = lien. */
   faq: Faq[];
 };
 
@@ -66,7 +66,7 @@ export const services: Service[] = [
     seo: {
       title: "Création de site web à Bruxelles et en Wallonie",
       description:
-        "Création de sites vitrines pour indépendants et PME à Bruxelles et en Wallonie : adaptés aux smartphones, formulaire de contact, SEO de base. Dès 590 €.",
+        "Création de site internet pour indépendants et PME en Belgique : site vitrine professionnel, adapté au mobile, pensé pour les demandes de devis. Dès 590 €.",
     },
     hero: { before: "Création de ", em: "sites web", after: " à Bruxelles et en Wallonie." },
     audience:
@@ -74,20 +74,28 @@ export const services: Service[] = [
     projectSlug: "site-vitrine-jardinage-elagage",
     faq: [
       {
+        q: "Un site est-il utile si je suis déjà sur Facebook ou Instagram ?",
+        a: "Les deux se complètent. Les réseaux sociaux entretiennent le lien avec vos abonnés ; votre site présente votre activité de façon complète et durable, apparaît dans les résultats de Google et vous appartient.",
+      },
+      {
         q: "Mon site sera-t-il adapté aux smartphones ?",
         a: "Oui. Chaque site est conçu pour s'afficher correctement sur ordinateur, tablette et smartphone, et son fonctionnement est vérifié avant la mise en ligne.",
       },
       {
-        q: "Le site est-il optimisé pour Google ?",
-        a: "Une optimisation SEO de base est incluse. La visibilité dans Google dépend toutefois de nombreux facteurs : aucune position précise ne peut être garantie.",
+        q: "Mon site sera-t-il visible sur Google dès sa mise en ligne ?",
+        a: "Google doit d'abord découvrir et indexer le site, ce qui peut prendre un peu de temps. L'optimisation SEO de base pose des fondations saines, mais aucune position ne peut être garantie. Pour les recherches locales, une [fiche Google Business Profile](/services/google-business-profile) bien renseignée est un complément utile.",
       },
       {
-        q: "Combien de temps faut-il pour créer un site web ?",
-        a: "Le délai dépend de la complexité du projet, des fonctionnalités souhaitées et de la disponibilité des contenus nécessaires (textes, photos, informations). Il est précisé dans la proposition.",
+        q: "Ai-je besoin d'un logo avant de créer mon site ?",
+        a: "Ce n'est pas obligatoire, mais un logo et des couleurs définis donnent un résultat plus cohérent. Si vous n'en avez pas encore, nous pouvons d'abord créer [votre identité visuelle](/services/identite-visuelle).",
+      },
+      {
+        q: "Que dois-je fournir pour démarrer ?",
+        a: "Une présentation de votre activité suffit pour un premier échange. Les textes, photos et informations nécessaires sont ensuite listés dans la proposition, avec ce qui est pris en charge de chaque côté.",
       },
       {
         q: "Combien coûte un site vitrine ?",
-        a: "Le site vitrine essentiel démarre à 590 €. Les pages ou fonctionnalités supplémentaires au-delà de ce périmètre peuvent faire l'objet d'un devis.",
+        a: "Le site vitrine essentiel démarre à 590 €. Les pages ou fonctionnalités supplémentaires au-delà de ce périmètre font l'objet d'un devis. Le détail est sur la page [Tarifs](/tarifs#site-vitrine).",
       },
     ],
   },
@@ -120,11 +128,11 @@ export const services: Service[] = [
     offerId: "identite-de-marque",
     path: "identite-visuelle",
     seo: {
-      title: "Identité visuelle et logo pour entreprise",
+      title: "Création de logo et d'identité visuelle",
       description:
-        "Logo, couleurs, typographies : une identité visuelle cohérente pour votre entreprise à Bruxelles et en Wallonie. À partir de 250 €, sur devis.",
+        "Création de logo professionnel, charte graphique et identité visuelle pour entreprises à Bruxelles et en Wallonie. À partir de 250 €, sur devis.",
     },
-    hero: { before: "Une identité visuelle ", em: "à votre image", after: ", du logo aux supports." },
+    hero: { before: "Création de ", em: "logo et d'identité visuelle", after: " pour votre entreprise." },
     audience:
       "Pour les entreprises qui se lancent, qui veulent moderniser leur image ou qui manquent de cohérence d'un support à l'autre : commerces, artisans, indépendants, restaurants et PME de Bruxelles et de Wallonie.",
     projectSlug: "identite-visuelle-restaurant",
@@ -138,8 +146,16 @@ export const services: Service[] = [
         a: "Chaque identité dépend de vos besoins et des supports à décliner. Le prix de départ est de 250 € ; le montant exact est précisé dans un devis.",
       },
       {
-        q: "Mon identité pourra-t-elle servir sur mon site et mes réseaux sociaux ?",
-        a: "Oui, c'est l'objectif : une identité cohérente s'applique de la même manière sur votre site, vos réseaux sociaux et vos supports imprimés.",
+        q: "Faut-il créer l'identité visuelle avant le site web ?",
+        a: "C'est l'idéal : votre [site web](/services/creation-site-web) reprend alors directement votre logo, vos couleurs et vos typographies, et tout reste cohérent dès le départ.",
+      },
+      {
+        q: "Mon identité pourra-t-elle servir sur mes réseaux sociaux et mes imprimés ?",
+        a: "Oui, c'est l'objectif : une identité cohérente s'applique de la même manière sur votre site, vos réseaux sociaux, votre fiche Google et vos supports imprimés.",
+      },
+      {
+        q: "Comment préparer la création de mon logo ?",
+        a: "Rassemblez ce qui décrit votre entreprise : vos valeurs, votre clientèle, des logos ou univers que vous appréciez (et ceux que vous n'aimez pas), et les supports sur lesquels le logo sera utilisé.",
       },
     ],
   },
@@ -174,11 +190,11 @@ export const services: Service[] = [
     offerId: "google-business-profile",
     path: "google-business-profile",
     seo: {
-      title: "Fiche Google Business Profile à Bruxelles",
+      title: "Optimisation fiche Google Business Profile",
       description:
-        "Création ou optimisation de votre fiche Google Business Profile à Bruxelles et en Wallonie : catégories, description, services, horaires. 149 €.",
+        "Création et optimisation de fiche Google Business Profile à Bruxelles et en Wallonie : catégories, description, services, photos, avis. 149 €.",
     },
-    hero: { before: "Votre fiche ", em: "Google Business Profile", after: ", complète et à jour." },
+    hero: { before: "Optimisation de votre ", em: "fiche Google Business Profile", after: "." },
     audience:
       "Pour les commerces, artisans, restaurants, professions libérales et entreprises locales de Bruxelles et de Wallonie qui reçoivent leurs clients ou se déplacent chez eux, et qui veulent être bien présentés quand on les cherche sur Google.",
     projectSlug: "google-business-profile-commerce-local",
@@ -188,12 +204,24 @@ export const services: Service[] = [
         a: "Non. La prestation comprend la création de la fiche si elle n'existe pas encore, ou l'optimisation d'une fiche existante.",
       },
       {
+        q: "Mon entreprise travaille uniquement en ligne : puis-je avoir une fiche ?",
+        a: "Non. Google réserve ces fiches aux entreprises qui rencontrent leurs clients en personne, dans leurs locaux ou chez eux. Pour une activité exclusivement en ligne, un [site web professionnel](/services/creation-site-web) est plus adapté.",
+      },
+      {
+        q: "Puis-je masquer mon adresse ?",
+        a: "Oui, si vous vous déplacez chez vos clients sans les recevoir à votre adresse : vous indiquez alors une zone desservie. Si vous recevez des clients sur place, l'adresse doit être affichée.",
+      },
+      {
         q: "Qui fournit les horaires et les coordonnées ?",
         a: "Vous. Les horaires et coordonnées sont mis à jour à partir des informations que vous fournissez, pour qu'elles restent exactes.",
       },
       {
-        q: "Pouvez-vous garantir la première place sur Google ?",
-        a: "Non. Le classement dans Google dépend de nombreux facteurs, dont certains ne dépendent pas de nous : aucune position précise ne peut être garantie.",
+        q: "Combien de temps avant de voir un effet ?",
+        a: "Les modifications sont d'abord examinées par Google, dans un délai variable. L'effet sur la visibilité dépend ensuite de nombreux facteurs : il n'est ni immédiat ni garanti.",
+      },
+      {
+        q: "Dois-je avoir un site web ?",
+        a: "Ce n'est pas obligatoire, mais une fiche qui renvoie vers un [site web professionnel](/services/creation-site-web) donne à vos clients plus d'informations pour vous choisir.",
       },
     ],
   },

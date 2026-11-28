@@ -4,6 +4,7 @@ import { useId, useLayoutEffect, useRef, useState } from "react";
 import { loadMotion, prefersReducedMotion } from "@/lib/motion-state";
 import type { Faq } from "@/config/faq";
 import { PlusIcon } from "./Icons";
+import { rich } from "./RichText";
 
 /** Questions fréquentes en accordéon accessible (boutons aria-expanded + panneaux animés). */
 export default function FaqList({ items }: { items: Faq[] }) {
@@ -79,7 +80,7 @@ export default function FaqList({ items }: { items: Faq[] }) {
                 panels.current[i] = el;
               }}
             >
-              <p>{item.a}</p>
+              <p>{rich(item.a)}</p>
             </div>
           </div>
         );

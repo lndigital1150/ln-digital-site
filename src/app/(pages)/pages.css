@@ -192,6 +192,9 @@ a:focus-visible .photo--zoom img { transform: scale(1.06); }
 .faq__q[aria-expanded="true"] .faq__icon { transform: rotate(45deg); background: var(--violet-profond); color: var(--blanc-lavande); border-color: var(--violet-profond); }
 .faq__a { overflow: hidden; }
 .faq__a p { padding-bottom: 26px; max-width: 70ch; color: var(--muted); }
+.text-link { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.22em; transition: color 0.2s ease; }
+@media (hover: hover) and (pointer: fine) { .text-link:hover { text-decoration-thickness: 2px; } }
+.service-points { display: grid; gap: 10px; margin-bottom: 8px; }
 .cta { position: relative; overflow: hidden; min-height: 92vh; display: grid; align-items: center; }
 .cta__bg { position: absolute; inset: -12% 0; }
 .cta__bg .photo { position: absolute; inset: 0; }

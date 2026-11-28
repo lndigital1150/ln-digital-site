@@ -156,10 +156,16 @@ export function FinalCta({
     </>
   ),
   text = "Discutons de votre projet et identifions les solutions les plus adaptées à votre entreprise.",
+  quoteHref = "/contact#devis",
+  whatsappMessage,
 }: {
   image?: PhotoKey;
   title?: ReactNode;
   text?: string;
+  /** Lien du bouton devis (par ex. avec le service présélectionné). */
+  quoteHref?: string;
+  /** Message WhatsApp prérempli propre à la page. */
+  whatsappMessage?: string;
 }) {
   return (
     <section className="cta theme-dark" data-chapter="Contact">
@@ -174,10 +180,10 @@ export function FinalCta({
           {text}
         </p>
         <div className="btn-row" data-reveal data-delay="0.15">
-          <Button href="/contact#devis" variant="accent">
+          <Button href={quoteHref} variant="accent">
             Demander un devis
           </Button>
-          <Button href={whatsappUrl()} variant="ghost" icon="whatsapp">
+          <Button href={whatsappUrl(whatsappMessage)} variant="ghost" icon="whatsapp">
             Nous contacter sur WhatsApp
           </Button>
         </div>
