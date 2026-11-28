@@ -9,7 +9,7 @@ import { pageMeta } from "@/lib/seo";
 import { whatsappUrl } from "@/lib/links";
 
 export const metadata: Metadata = pageMeta({
-  title: "Tarifs — sites web, identité visuelle, Google Business Profile",
+  title: "Tarifs site web, logo et fiche Google Business",
   description:
     "Tarifs indicatifs de LN Digital : site vitrine dès 590 €, identité visuelle dès 250 €, fiche Google Business Profile 149 €. Projets sur mesure sur devis.",
   path: "/tarifs",

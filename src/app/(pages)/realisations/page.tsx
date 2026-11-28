@@ -8,7 +8,7 @@ import { pageMeta } from "@/lib/seo";
 export const metadata: Metadata = pageMeta({
   title: "Réalisations — projets de démonstration",
   description:
-    "Projets de démonstration fictifs de LN Digital : site vitrine pour une entreprise de jardinage, identité visuelle de restaurant, fiche Google Business Profile pour un commerce local.",
+    "Projets de démonstration fictifs : site vitrine pour une entreprise de jardinage, identité visuelle de restaurant, fiche Google d'un commerce local.",
   path: "/realisations",
   image: photos.gardenPath.src,
 });
@@ -56,7 +56,7 @@ export default function RealisationsPage() {
           <SectionHead
             title={
               <>
-                Quatre secteurs, <em>quatre</em> approches.
+                Trois secteurs, <em>trois</em> approches.
               </>
             }
           />

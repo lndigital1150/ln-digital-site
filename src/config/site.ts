@@ -20,7 +20,7 @@ export const site = {
   baseline: "Des solutions digitales pour accompagner la croissance de votre entreprise.",
 
   description:
-    "LN Digital, agence de marketing digital en Belgique : création de sites web, identité visuelle et Google Business Profile à Bruxelles et en Wallonie.",
+    "Agence web à Bruxelles et en Wallonie : création de sites web, identité visuelle et Google Business Profile pour indépendants, commerces et PME.",
 
   zone: "Bruxelles · Wallonie",
   zoneLong: "Bruxelles et Wallonie, Belgique",

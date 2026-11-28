@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
-import { shareImage } from "@/config/images";
+import { photos, shareImage } from "@/config/images";
 
 type PageMeta = { title: string; description: string; path: string; image?: string };
 
@@ -21,7 +21,8 @@ export function pageMeta({ title, description, path, image }: PageMeta): Metadat
       siteName: site.name,
       locale: site.locale,
       type: "website",
-      images: image ? [{ url: shareImageUrl(image), width: 1200, height: 630 }] : undefined,
+      // Image par défaut (accueil) pour les pages sans photo propre, comme les pages légales.
+      images: [{ url: shareImageUrl(image ?? photos.heroMain.src), width: 1200, height: 630 }],
     },
     twitter: { card: "summary_large_image", title: `${title} | ${site.name}`, description },
   };

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { services } from "@/config/services";
+import { services, servicePath } from "@/config/services";
 import { offers, formatPrice } from "@/config/pricing";
 import { photos } from "@/config/images";
 import Photo from "@/components/ui/Photo";
@@ -12,9 +12,9 @@ import { pageMeta } from "@/lib/seo";
 import { quoteUrl } from "@/lib/links";
 
 export const metadata: Metadata = pageMeta({
-  title: "Services de marketing digital à Bruxelles et en Wallonie",
+  title: "Nos services web à Bruxelles et en Wallonie",
   description:
-    "Création de sites web pour PME et indépendants, identité visuelle (logo, couleurs, typographies) et optimisation de votre fiche Google Business Profile, à Bruxelles et en Wallonie.",
+    "Trois services pour indépendants et PME à Bruxelles et en Wallonie : création de sites web, identité visuelle (logo) et fiche Google Business Profile.",
   path: "/services",
   image: photos.web.src,
 });
@@ -41,7 +41,7 @@ export default function ServicesPage() {
         <div className="container">
           <HoverPreview images={services.map((s) => s.image)} className="svc-index">
             {services.map((s, i) => (
-              <Link key={s.slug} href={`#${s.slug}`} data-preview-index={i} data-cursor="Voir">
+              <Link key={s.slug} href={servicePath(s)} data-preview-index={i} data-cursor="Voir">
                 <strong>{s.title}</strong>
                 <ArrowUpRight />
               </Link>
@@ -83,28 +83,18 @@ export default function ServicesPage() {
                   <p className="h3 serif-italic" style={{ color: "var(--lavande-lumineuse)" }} data-reveal>
                     {s.headline}
                   </p>
-                  <div className="prose" data-reveal>
-                    {s.intro.map((p) => (
-                      <p key={p.slice(0, 20)}>{p}</p>
-                    ))}
-                  </div>
-                  <div className="svc__cols" data-reveal>
-                    <div>
-                      <h3>Bénéfices pour vous</h3>
-                      <ul className="checklist">
-                        {s.benefits.map((b) => (
-                          <li key={b}>{b}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h3>Prestations incluses</h3>
-                      <ul className="checklist checklist--muted">
-                        {s.includes.map((b) => (
-                          <li key={b}>{b}</li>
-                        ))}
-                      </ul>
-                    </div>
+                  {/* Résumé : le détail (présentation complète, prestations incluses, questions fréquentes)
+                      est sur la page dédiée du service, pour ne pas dupliquer le contenu. */}
+                  <p className="lead" data-reveal>
+                    {s.short}
+                  </p>
+                  <div data-reveal>
+                    <h3>Bénéfices pour vous</h3>
+                    <ul className="checklist">
+                      {s.benefits.map((b) => (
+                        <li key={b}>{b}</li>
+                      ))}
+                    </ul>
                   </div>
                   {s.note && (
                     <p className="note" data-reveal>
@@ -112,7 +102,10 @@ export default function ServicesPage() {
                     </p>
                   )}
                   <div className="btn-row" data-reveal>
-                    <Button href={quoteUrl(s.slug)} variant={i === 0 ? "accent" : "primary"}>
+                    <Button href={servicePath(s)} variant={i === 0 ? "accent" : "primary"}>
+                      Découvrir le service
+                    </Button>
+                    <Button href={quoteUrl(s.slug)} variant="ghost">
                       Demander un devis
                     </Button>
                     <Button href={`/tarifs#${s.offerId}`} variant="ghost">

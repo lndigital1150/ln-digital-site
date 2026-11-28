@@ -6,7 +6,7 @@ import { photos } from "@/config/images";
 import Photo from "@/components/ui/Photo";
 import Button from "@/components/ui/Button";
 import { ArrowUpRight } from "@/components/ui/Icons";
-import { MockBrowser, MockPhone } from "@/components/sections/Cards";
+import { MockBrowser, MockPhone, ServiceTags } from "@/components/sections/Cards";
 import { DemoNotice, FinalCta, PageHero } from "@/components/sections/Shared";
 import { pageMeta } from "@/lib/seo";
 
@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = getProject(slug);
   if (!p) return {};
   return pageMeta({
-    title: `${p.title} (démonstration)`,
-    description: `Projet de démonstration fictif : ${p.short}`,
+    title: p.seoTitle,
+    description: `Projet de démonstration fictif : ${p.short.charAt(0).toLowerCase()}${p.short.slice(1)}`,
     path: `/realisations/${p.slug}`,
     image: photos[p.cover].src,
   });
@@ -67,13 +67,7 @@ export default async function ProjectPage({ params }: Props) {
               <p className="label" style={{ marginBottom: 12 }}>
                 Services illustrés
               </p>
-              <div className="tags">
-                {p.services.map((s) => (
-                  <span key={s} className="tag">
-                    {s}
-                  </span>
-                ))}
-              </div>
+              <ServiceTags names={p.services} />
             </div>
           </div>
           <div className="stack" style={{ gap: 28 }}>

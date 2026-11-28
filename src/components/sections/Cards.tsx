@@ -4,8 +4,29 @@ import Button from "@/components/ui/Button";
 import { ArrowUpRight } from "@/components/ui/Icons";
 import { formatPrice, TO_DEFINE, type Offer } from "@/config/pricing";
 import type { Project } from "@/config/projects";
+import { getService, getServiceByTitle, servicePath } from "@/config/services";
 import { photos } from "@/config/images";
 import { orderUrl, questionUrl, quoteUrl } from "@/lib/links";
+
+/* ---------- Étiquettes des services illustrés par un projet (liens vers les pages de service) ---------- */
+export function ServiceTags({ names }: { names: string[] }) {
+  return (
+    <div className="tags">
+      {names.map((name) => {
+        const s = getServiceByTitle(name);
+        return s ? (
+          <Link key={name} href={servicePath(s)} className="tag">
+            {name}
+          </Link>
+        ) : (
+          <span key={name} className="tag">
+            {name}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 /* ---------- Carte tarif ---------- */
 export function PriceCard({ offer, detailed = false }: { offer: Offer; detailed?: boolean }) {
@@ -20,6 +41,7 @@ export function PriceCard({ offer, detailed = false }: { offer: Offer; detailed?
     </div>
   );
 
+  const service = getService(offer.serviceSlug);
   return (
     <article className="price-card" id={offer.id} data-tilt="3">
       {offer.featured && <span className="price-card__badge">Tarif fixe</span>}
@@ -30,6 +52,11 @@ export function PriceCard({ offer, detailed = false }: { offer: Offer; detailed?
           <p className="muted" style={{ fontSize: 15 }}>
             {offer.summary}
           </p>
+          {service && (
+            <Link href={servicePath(service)} className="link-arrow">
+              Le service en détail <ArrowUpRight />
+            </Link>
+          )}
         </div>
         <div className="price-card__price" aria-label={`Prix : ${formatPrice(offer)}`}>
           {offer.prefix && <span className="price-card__prefix">{offer.prefix}</span>}
@@ -149,13 +176,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         <Link href={`/realisations/${project.slug}`}>{project.title}</Link>
       </h3>
       <p className="muted">{project.short}</p>
-      <div className="tags">
-        {project.services.map((s) => (
-          <span key={s} className="tag">
-            {s}
-          </span>
-        ))}
-      </div>
+      <ServiceTags names={project.services} />
       <Link href={`/realisations/${project.slug}`} className="link-arrow">
         Découvrir le projet <ArrowUpRight />
       </Link>

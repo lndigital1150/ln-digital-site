@@ -7,9 +7,9 @@ import { BigMarquee, FinalCta, PageHero, SectionHead } from "@/components/sectio
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "À propos — marketing digital à Bruxelles et en Wallonie",
+  title: "À propos — agence web Bruxelles et Wallonie",
   description:
-    "LN Digital aide les commerces, artisans, indépendants et PME de Bruxelles et de Wallonie à exploiter les opportunités du digital : notre approche, notre méthode en quatre étapes et nos valeurs.",
+    "LN Digital aide commerces, artisans, indépendants et PME de Bruxelles et de Wallonie à grandir en ligne : notre approche, notre méthode et nos valeurs.",
   path: "/a-propos",
   image: photos.aboutTeam.src,
 });

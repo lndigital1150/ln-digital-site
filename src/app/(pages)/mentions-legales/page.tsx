@@ -6,7 +6,7 @@ import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
   title: "Mentions légales",
-  description: "Mentions légales du site de LN Digital, agence de marketing digital à Bruxelles et en Wallonie.",
+  description: "Mentions légales du site de LN Digital, agence web à Bruxelles et en Wallonie.",
   path: "/mentions-legales",
 });
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { legalNav, nav, site } from "@/config/site";
-import { services } from "@/config/services";
+import { services, servicePath } from "@/config/services";
 import { whatsappUrl } from "@/lib/links";
 import CurrentYear from "./CurrentYear";
 import MotionToggle from "./MotionToggle";
@@ -36,7 +36,7 @@ export default function Footer() {
           <ul>
             {services.map((s) => (
               <li key={s.slug}>
-                <Link href={`/services#${s.slug}`}>{s.title}</Link>
+                <Link href={servicePath(s)}>{s.title}</Link>
               </li>
             ))}
           </ul>

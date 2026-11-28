@@ -10,6 +10,8 @@ export const DEMO_NOTICE =
 export type Project = {
   slug: string;
   title: string;
+  /** Titre court pour la balise title (≤ 47 caractères, « | LN Digital » est ajouté). */
+  seoTitle: string;
   sector: string;
   category: string;
   year: string;
@@ -27,6 +29,7 @@ export const projects: Project[] = [
   {
     slug: "site-vitrine-jardinage-elagage",
     title: "Site vitrine pour une entreprise de jardinage et d'élagage",
+    seoTitle: "Site vitrine jardinage et élagage (démo)",
     sector: "Artisan · Jardinage",
     category: "Site web",
     year: "Démo",
@@ -51,6 +54,7 @@ export const projects: Project[] = [
   {
     slug: "identite-visuelle-restaurant",
     title: "Identité visuelle pour un restaurant",
+    seoTitle: "Identité visuelle de restaurant (démo)",
     sector: "Horeca · Restaurant",
     category: "Identité visuelle",
     year: "Démo",
@@ -75,6 +79,7 @@ export const projects: Project[] = [
   {
     slug: "google-business-profile-commerce-local",
     title: "Fiche Google Business Profile pour un commerce local",
+    seoTitle: "Fiche Google d'un commerce local (démo)",
     sector: "Commerce · Boutique",
     category: "Google Business Profile",
     year: "Démo",

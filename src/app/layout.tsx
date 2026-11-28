@@ -21,7 +21,7 @@ const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat", weight: [
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — Agence de marketing digital à Bruxelles et en Wallonie`,
+    default: `${site.name} — Agence web à Bruxelles et en Wallonie`,
     template: `%s | ${site.name}`,
   },
   description: site.description,

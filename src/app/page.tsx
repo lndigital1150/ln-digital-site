@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { services } from "@/config/services";
+import { services, servicePath } from "@/config/services";
 import { projects } from "@/config/projects";
 import { photos } from "@/config/images";
 import HomeHero from "@/components/home/HomeHero";
 import { pageMeta } from "@/lib/seo";
+import { WebSiteJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
   ...pageMeta({
-    title: "Agence de marketing digital en Belgique — Bruxelles et Wallonie",
+    title: "Agence web à Bruxelles et en Wallonie",
     description:
-      "LN Digital accompagne commerces, artisans, indépendants et PME à Bruxelles et en Wallonie : création de sites web, identité visuelle (logo) et fiche Google Business Profile.",
+      "Agence digitale à Bruxelles et en Wallonie : création de sites web, identité visuelle et Google Business Profile pour indépendants, commerces et PME.",
     path: "/",
     image: photos.heroMain.src,
   }),
-  title: { absolute: "LN Digital — Agence de marketing digital en Belgique (Bruxelles · Wallonie)" },
+  title: { absolute: "LN Digital — Agence web à Bruxelles et en Wallonie" },
 };
 
 /* Bandeau du héros : les 3 services puis les projets de démonstration (signalés comme fictifs). */
@@ -24,7 +25,7 @@ const serviceTaglines: Record<string, string> = {
 };
 const reelItems = [
   ...services.map((s) => ({
-    href: `/services#${s.slug}`,
+    href: servicePath(s),
     title: s.title,
     sub: serviceTaglines[s.slug] ?? s.shortTitle,
     image: s.image,
@@ -43,5 +44,10 @@ const reelItems = [
  * Le contenu détaillé vit sur les pages Services, Tarifs, Réalisations, À propos et Contact.
  */
 export default function HomePage() {
-  return <HomeHero items={reelItems} />;
+  return (
+    <>
+      <WebSiteJsonLd />
+      <HomeHero items={reelItems} />
+    </>
+  );
 }

@@ -28,7 +28,7 @@ npm run start      # lance la version de production
 | Je veux modifier…                         | Fichier                                    |
 |-------------------------------------------|--------------------------------------------|
 | Slogan, WhatsApp, e-mail, zone, infos légales | `src/config/site.ts`                    |
-| Les 3 services (textes, prestations, photos)  | `src/config/services.ts`                |
+| Les 3 services (textes, prestations, photos, pages dédiées : titre, description, FAQ) | `src/config/services.ts` |
 | Les tarifs, offres, mode d'achat              | `src/config/pricing.ts`                 |
 | Les projets de démonstration                  | `src/config/projects.ts`                |
 | Les questions fréquentes                      | `src/config/faq.ts`                     |
@@ -103,6 +103,8 @@ Slogan retenu : **« Connecter votre entreprise à ses clients. »** — il prol
 | **Paiement en ligne** | ⚙️ à configurer (Stripe) — sinon « mode démonstration », aucune commande enregistrée |
 | Confirmation de commande | ✅ affichée **uniquement** si Stripe confirme le paiement |
 | SEO : titres/descriptions uniques, sitemap.xml, robots.txt, données structurées, fil d'Ariane | ✅ |
+| Une page par service (`/services/creation-site-web`, `/services/identite-visuelle`, `/services/google-business-profile`) | ✅ |
+| Redirections 301 vers https://lndigital.be (www, workers.dev, http) dans `next.config.ts` | ✅ |
 | Pages légales | 📝 modèles à compléter et à faire relire |
 | Nom de domaine, e-mail professionnel, statut juridique | 📝 à définir |
 

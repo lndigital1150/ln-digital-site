@@ -15,7 +15,7 @@ import { mailConfigured } from "@/lib/server/integrations";
 export const metadata: Metadata = pageMeta({
   title: "Contact et demande de devis",
   description:
-    "Demandez un devis à LN Digital, agence de marketing digital à Bruxelles et en Wallonie : site web, identité visuelle, Google Business Profile. Réponse par e-mail ou WhatsApp.",
+    "Demandez un devis à LN Digital, agence web à Bruxelles et en Wallonie : site web, identité visuelle ou fiche Google. Réponse par e-mail ou WhatsApp.",
   path: "/contact",
   image: photos.contactHandshake.src,
 });
